@@ -47,18 +47,24 @@ async function run() {
     let deploy;
 
     if (!dryRun) {
-      const { deploy: deployment } = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
-        functionsDir,
-        configPath,
-        draft,
-        message,
-        deployTimeout,
-        parallelHash,
-        parallelUpload,
-        maxRetry,
-      });
+      try {
+        const { deploy: deployment } = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
+          functionsDir,
+          configPath,
+          draft,
+          message,
+          deployTimeout,
+          parallelHash,
+          parallelUpload,
+          maxRetry,
+        });
 
-      deploy = deployment;
+        deploy = deployment;
+      } catch (error) {
+        process.stderr.write('netlifyClient.deploy() failed');
+        process.stderr.write(JSON.stringify(error, null, 2));
+        core.setFailed(error.message);
+      }
     }
 
     const githubClient = new github.GitHub(githubToken);
@@ -72,12 +78,18 @@ async function run() {
       } = github.context;
 
       if (!dryRun) {
-        await githubClient.repos.createCommitComment({
-          owner,
-          repo,
-          commit_sha: sha,
-          body: createCommentMessage(draft, deploy),
-        });
+        try {
+          await githubClient.repos.createCommitComment({
+            owner,
+            repo,
+            commit_sha: sha,
+            body: createCommentMessage(draft, deploy),
+          });
+        } catch (error) {
+          process.stderr.write('repos.createCommitComment() failed');
+          process.stderr.write(JSON.stringify(error, null, 2));
+          core.setFailed(error.message);
+        }
       }
     }
 
@@ -90,12 +102,18 @@ async function run() {
       } = github.context;
 
       if (!dryRun) {
-        await githubClient.issues.createComment({
-          owner,
-          repo,
-          issue_number: number,
-          body: createCommentMessage(draft, deploy),
-        });
+        try {
+          await githubClient.issues.createComment({
+            owner,
+            repo,
+            issue_number: number,
+            body: createCommentMessage(draft, deploy),
+          });
+        } catch (error) {
+          process.stderr.write('issues.createComment() failed');
+          process.stderr.write(JSON.stringify(error, null, 2));
+          core.setFailed(error.message);
+        }
       }
     }
   } catch (error) {
