@@ -18,14 +18,14 @@ async function run(): Promise<void> {
     // Get action inputs
     // const githubToken = core.getInput('github-token', { required: true });
     const buildDir = core.getInput('build-dir', { required: true });
-    const functionsDir = core.getInput('functions-dir');
-    const configPath = core.getInput('config-path');
+    const functionsDir = core.getInput('functions-dir') || null;
+    const configPath = core.getInput('config-path') || null;
     const draft = core.getInput('draft') === 'true';
     const message = core.getInput('message') || createMessage();
-    const deployTimeout = Number.parseInt(core.getInput('deploy-timeout'), 10) || undefined;
-    const parallelHash = Number.parseInt(core.getInput('parallel-hash'), 10) || undefined;
-    const parallelUpload = Number.parseInt(core.getInput('parallel-upload'), 10) || undefined;
-    const maxRetry = Number.parseInt(core.getInput('max-retry'), 10) || undefined;
+    const deployTimeout = Number.parseInt(core.getInput('deploy-timeout'), 10) || 1.2e6;
+    const parallelHash = Number.parseInt(core.getInput('parallel-hash'), 10) || 100;
+    const parallelUpload = Number.parseInt(core.getInput('parallel-upload'), 10) || 15;
+    const maxRetry = Number.parseInt(core.getInput('max-retry'), 10) || 5;
 
     const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
