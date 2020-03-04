@@ -9,11 +9,11 @@ const createDeployMessage = (
   pullRequestTitle: string | undefined,
 ) => {
   if (commitMessage) {
-    return `${commitMessage} [${commitShaShort}]`;
+    return `Commit: ${commitMessage} [${commitShaShort}]`;
   }
 
-  if (commitMessage) {
-    return `${pullRequestTitle} [${commitShaShort}]`;
+  if (pullRequestTitle) {
+    return `PR: ${pullRequestTitle} [${commitShaShort}]`;
   }
 
   return undefined;
@@ -71,10 +71,6 @@ async function run(): Promise<void> {
     const commitMessage = isCommit ? github.context.payload?.head_commit?.message : undefined;
     const pullRequestNumber = github.context.payload.pull_request?.number;
     const pullRequestTitle = isPullRequest ? github.context.payload?.pull_request?.title : undefined;
-
-    process.stdout.write(
-      JSON.stringify({ commitShaShort, commitMessage, pullRequestNumber, pullRequestTitle }, null, 2),
-    );
 
     // Get required inputs
     const githubToken = core.getInput('github-token', { required: true });
