@@ -1,9 +1,9 @@
-// import * as path from 'path';
+import * as path from 'path';
 import * as core from '@actions/core';
-// import * as github from '@actions/github';
-// import NetlifyAPI from 'netlify/dist/main';
+import * as github from '@actions/github';
+import NetlifyAPI from 'netlify/dist/main';
 
-const createMessage = () => {};
+const createMessage = () => undefined;
 
 async function run(): Promise<void> {
   try {
@@ -27,37 +27,22 @@ async function run(): Promise<void> {
     const parallelUpload = Number.parseInt(core.getInput('parallel-upload'), 10) || undefined;
     const maxRetry = Number.parseInt(core.getInput('max-retry'), 10) || undefined;
 
-    process.stdout.write(
-      JSON.stringify(
-        {
-          buildDir,
-          functionsDir,
-          configPath,
-          draft,
-          message,
-          deployTimeout,
-          parallelHash,
-          parallelUpload,
-          maxRetry,
-        },
-        null,
-        2,
-      ),
-    );
+    const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
-    // const netlifyClient = new NetlifyAPI(netlifyAuthToken);
+    // Deploy site
+    // const deploy =
+    await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
+      functionsDir,
+      configPath,
+      draft,
+      message,
+      deployTimeout,
+      parallelHash,
+      parallelUpload,
+      maxRetry,
+    });
 
-    // // Deploy site
-    // const deploy = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
-    //   functionsDir,
-    //   configPath,
-    //   draft,
-    //   message,
-    //   deployTimeout,
-    //   parallelHash,
-    //   parallelUpload,
-    //   maxRetry,
-    // });
+    process.stdout.write(JSON.stringify(github.context));
 
     // Comment with deploy URL on PR
     // const githubClient = new github.GitHub(githubToken);
