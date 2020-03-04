@@ -1,0 +1,37 @@
+name: 'Netlify Deploy Action'
+description: 'Deploy a built to Netlify and comment on the PR or Issue with URL'
+author: 'Alex Gabites'
+inputs:
+  github-token:
+    description: 'Github token'
+    required: true
+  build-dir:
+    description: 'The folder of the site want to deploy'
+    required: true
+  functions-dir:
+    description: 'The folder of any functions to deploy'
+    required: false
+  config-path:
+    description: 'Path to a netlify.toml file to include in the deploy'
+    required: false
+  draft:
+    description: 'If it is a draft deploy or production deploy'
+    required: false
+  message:
+    description: 'A short message to associate with the deploy'
+    required: false
+  deploy-timeout:
+    description: 'Deployment timeout'
+    required: false
+  parallel-hash:
+    description: 'Number of parallel hashing calls'
+    required: false
+  parallel-upload:
+    description: 'Number of files to upload in parallel'
+    required: false
+  max-retry:
+    description: 'Number of times to try on failed file uploads'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

@@ -1,0 +1,22 @@
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.swp
+
+pids
+logs
+results
+tmp
+
+node_modules
+coverage
+.env
+
+# OS metadata
+.DS_Store
+Thumbs.db
