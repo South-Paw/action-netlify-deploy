@@ -16,7 +16,7 @@ async function run(): Promise<void> {
     }
 
     // Get action inputs
-    const githubToken = core.getInput('github-token', { required: true });
+    // const githubToken = core.getInput('github-token', { required: true });
     const buildDir = core.getInput('build-dir', { required: true });
     const functionsDir = core.getInput('functions-dir');
     const configPath = core.getInput('config-path');
