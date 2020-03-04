@@ -27,8 +27,8 @@ async function run() {
     const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
-    // const functionsDir = core.getInput('functions-dir') || null;
-    // const configPath = core.getInput('config-path') || null;
+    const functionsDir = core.getInput('functions-dir') || null;
+    const configPath = core.getInput('config-path') || null;
     const draft = core.getInput('draft') === 'true';
     const message = core.getInput('message') || createDeployMessage(commitShaShort, commitMessage, pullRequestTitle);
     // const deployTimeout = Number.parseInt(core.getInput('deploy-timeout'), 10) || 1.2e6;
@@ -49,8 +49,8 @@ async function run() {
     if (!dryRun) {
       try {
         const deployment = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
-          // functionsDir,
-          // configPath,
+          functionsDir,
+          configPath,
           draft,
           message,
           // deployTimeout,
