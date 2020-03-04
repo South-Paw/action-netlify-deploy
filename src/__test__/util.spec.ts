@@ -1,4 +1,4 @@
-import { createCommentMessage, NetlifyDeploy, createDeployMessage } from './util';
+import { createCommentMessage, NetlifyDeploy, createDeployMessage } from '../util';
 
 const mockDeploy: NetlifyDeploy = {
   id: 'string',
