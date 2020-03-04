@@ -1,6 +1,9 @@
 name: Netlify Deploy Action
 description: Deploys a build to Netlify and can comment on the commit or PR with the URL
 author: Alex Gabites <https://github.com/South-Paw>
+branding:
+  color: blue
+  icon: upload-cloud
 runs:
   using: 'node12'
   main: 'dist/index.js'
