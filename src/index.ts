@@ -24,7 +24,7 @@ async function run() {
     // Get config inputs
     const commentOnCommit = core.getInput('comment-on-commit') === 'true';
     const commentOnPullRequest = core.getInput('comment-on-pull-request') === 'true';
-    const dryRun = core.getInput('dry-run') === 'true';
+    // const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
     const functionsDir = core.getInput('functions-dir') || null;
@@ -38,28 +38,28 @@ async function run() {
 
     const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
-    if (dryRun) {
-      process.stdout.write(`Action is in 'dry-run' mode. It won't output anything!\n`);
-    }
+    // if (dryRun) {
+    //   process.stdout.write(`Action is in 'dry-run' mode. It won't output anything!\n`);
+    // }
 
     process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
 
-    let deploy;
+    // let deploy;
 
-    if (!dryRun) {
-      const { deploy: deployment } = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
-        functionsDir,
-        configPath,
-        draft,
-        message,
-        deployTimeout,
-        parallelHash,
-        parallelUpload,
-        maxRetry,
-      });
+    // if (!dryRun) {
+    const { deploy } = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
+      functionsDir,
+      configPath,
+      draft,
+      message,
+      deployTimeout,
+      parallelHash,
+      parallelUpload,
+      maxRetry,
+    });
 
-      deploy = deployment;
-    }
+    // deploy = deployment;
+    // }
 
     const githubClient = new github.GitHub(githubToken);
 
@@ -71,14 +71,14 @@ async function run() {
         sha,
       } = github.context;
 
-      if (!dryRun) {
-        await githubClient.repos.createCommitComment({
-          owner,
-          repo,
-          commit_sha: sha,
-          body: createCommentMessage(draft, deploy),
-        });
-      }
+      // if (!dryRun) {
+      await githubClient.repos.createCommitComment({
+        owner,
+        repo,
+        commit_sha: sha,
+        body: createCommentMessage(draft, deploy),
+      });
+      // }
     }
 
     if (isPullRequest && commentOnPullRequest) {
@@ -89,14 +89,14 @@ async function run() {
         issue: { number },
       } = github.context;
 
-      if (!dryRun) {
-        await githubClient.issues.createComment({
-          owner,
-          repo,
-          issue_number: number,
-          body: createCommentMessage(draft, deploy),
-        });
-      }
+      // if (!dryRun) {
+      await githubClient.issues.createComment({
+        owner,
+        repo,
+        issue_number: number,
+        body: createCommentMessage(draft, deploy),
+      });
+      // }
     }
   } catch (error) {
     core.setFailed(error.message);
