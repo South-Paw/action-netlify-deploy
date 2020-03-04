@@ -37,8 +37,8 @@ export interface NetlifyDeploy {
 
 export const createCommentMessage = (isDraft: boolean, deploy: NetlifyDeploy) =>
   isDraft
-    ? `🚀 Netlify draft deployed to: ${deploy.deploy_ssl_url}`
-    : `🎉 Netlify published ${deploy.name} to production.\nDeployed to: ${deploy.ssl_url}`;
+    ? `🚀 Netlify deployed **${deploy.name}** as draft\n\n${deploy.deploy_ssl_url}`
+    : `🎉 Netlify deployed **${deploy.name}** as production\n\n${deploy.ssl_url}`;
 
 export const createDeployMessage = (
   commitShaShort: string,
