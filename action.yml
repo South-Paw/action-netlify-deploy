@@ -48,19 +48,3 @@ inputs:
     description: A short message to associate with the deploy
     required: false
     default: null
-  deploy-timeout:
-    description: Deployment timeout
-    required: false
-    default: '1.2e6'
-  parallel-hash:
-    description: Number of parallel hashing calls
-    required: false
-    default: '100'
-  parallel-upload:
-    description: Number of files to upload in parallel
-    required: false
-    default: '15'
-  max-retry:
-    description: Number of times to try on failed file uploads
-    required: false
-    default: '5'

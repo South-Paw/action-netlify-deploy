@@ -31,18 +31,14 @@ async function run() {
     const configPath = core.getInput('config-path') || null;
     const draft = core.getInput('draft') === 'true';
     const message = core.getInput('message') || createDeployMessage(commitShaShort, commitMessage, pullRequestTitle);
-    // const deployTimeout = Number.parseInt(core.getInput('deploy-timeout'), 10) || 1.2e6;
-    // const parallelHash = Number.parseInt(core.getInput('parallel-hash'), 10) || 100;
-    // const parallelUpload = Number.parseInt(core.getInput('parallel-upload'), 10) || 15;
-    // const maxRetry = Number.parseInt(core.getInput('max-retry'), 10) || 5;
-
-    const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
     if (dryRun) {
       process.stdout.write(`Action is running dry - there won't be any outputs from this run.\n`);
     }
 
     process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
+
+    const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
     let deploy;
 
@@ -53,10 +49,6 @@ async function run() {
           configPath,
           draft,
           message,
-          // deployTimeout,
-          // parallelHash,
-          // parallelUpload,
-          // maxRetry,
         });
 
         process.stdout.write(`${JSON.stringify(deployment, null, 2)}\n`);
