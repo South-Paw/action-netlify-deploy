@@ -3,6 +3,8 @@
 🙌 Deploys a build to Netlify and can comment on the commit or PR with the URL
 
 ![CI](https://github.com/South-Paw/action-netlify-deploy/workflows/CI/badge.svg)
+[![Dependencies](https://david-dm.org/South-Paw/action-netlify-deploy/status.svg)](https://david-dm.org/South-Paw/action-netlify-deploy)
+[![Dev Dependencies](https://david-dm.org/South-Paw/action-netlify-deploy/dev-status.svg)](https://david-dm.org/South-Paw/action-netlify-deploy?type=dev)
 
 ## About
 

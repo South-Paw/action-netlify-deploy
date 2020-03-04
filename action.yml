@@ -45,6 +45,6 @@ inputs:
     required: false
     default: 'false'
   message:
-    description: A short message to associate with the deploy
+    description: "A short message to associate with the deploy (Note: setting this will override the default deploy message of `<type>: <title> [short_sha]`)"
     required: false
     default: null
