@@ -25,7 +25,11 @@ See the [action.yml](./action.yml) for other action inputs and their description
 
 ## Usage
 
-Here are some example usages of this action in CI workflows
+Here are some ideas of how to configure this action in different workflows...
+
+* [Deploying drafts on each commit and publishing on push to master](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-on-each-commit-and-publishing-on-push-to-master)
+* [Deploying drafts of pull requests and publishing on push to master](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-of-pull-requests-and-publishing-on-push-to-master)
+* [Deploying drafts of pull requests and publish on release created](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-of-pull-requests-and-publish-on-release-created)
 
 ### Deploying drafts on each commit and publishing on push to master
 
@@ -90,6 +94,7 @@ jobs:
 name: CI
 
 on:
+  push:
   pull_request:
     types:
       - opened
@@ -145,7 +150,7 @@ jobs:
           comment-on-commit: true
 ```
 
-### Deploy drafts of pull requests and publish on release created
+### Deploying drafts of pull requests and publish on release created
 
 ```yaml
 name: CI
@@ -155,6 +160,9 @@ on:
     types:
       - opened
       - synchronize
+  release:
+    types:
+      - created
 
 jobs:
 
