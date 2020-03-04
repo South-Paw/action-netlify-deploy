@@ -24,7 +24,7 @@ async function run() {
     // Get config inputs
     const commentOnCommit = core.getInput('comment-on-commit') === 'true';
     const commentOnPullRequest = core.getInput('comment-on-pull-request') === 'true';
-    const dryRun = core.getInput('dry-run') === 'false';
+    const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
     const functionsDir = core.getInput('functions-dir') || null;
@@ -37,6 +37,10 @@ async function run() {
     const maxRetry = Number.parseInt(core.getInput('max-retry'), 10) || 5;
 
     const netlifyClient = new NetlifyAPI(netlifyAuthToken);
+
+    if (dryRun) {
+      process.stdout.write(`Action is in 'dry-run' mode. It won't output anything!\n`);
+    }
 
     process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
 
