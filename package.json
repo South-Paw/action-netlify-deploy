@@ -1,6 +1,6 @@
 {
   "name": "@south-paw/action-netlify-deploy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Deploys a build to Netlify and can comment on the commit or PR with the URL",
   "keywords": [],
   "homepage": "https://github.com/South-Paw/action-netlify-deploy",

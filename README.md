@@ -54,7 +54,7 @@ jobs:
       # ... your other build steps to produce a build directory
       # e.g. `yarn build` for create-react-app
 
-      - name: Deplopy draft to Netlify
+      - name: Deploy draft to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -78,7 +78,7 @@ jobs:
       # ... your other build steps to produce a build directory
       # e.g. `yarn build` for create-react-app
 
-      - name: Deplopy production to Netlify
+      - name: Deploy production to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -116,7 +116,7 @@ jobs:
       # ... your other build steps to produce a build directory
       # e.g. `yarn build` for create-react-app
 
-      - name: Deplopy draft to Netlify
+      - name: Deploy draft to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -140,7 +140,7 @@ jobs:
       # ... your other build steps to produce a build directory
       # e.g. `yarn build` for create-react-app
 
-      - name: Deplopy production to Netlify
+      - name: Deploy production to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -180,7 +180,7 @@ jobs:
       # ... your other build steps to produce a build directory
       # e.g. `yarn build` for create-react-app
 
-      - name: Deplopy draft to Netlify
+      - name: Deploy draft to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -204,7 +204,7 @@ jobs:
       # ... your other build steps to produce a build directory
       # e.g. `yarn build` for create-react-app
 
-      - name: Deplopy production to Netlify
+      - name: Deploy production to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
