@@ -3,23 +3,89 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import NetlifyAPI from 'netlify';
 
-const createMessage = () => undefined;
+const createDeployMessage = (
+  commitShaShort: string,
+  commitMessage: string | undefined,
+  pullRequestTitle: string | undefined,
+) => {
+  if (commitMessage) {
+    return `${commitMessage} [${commitShaShort}]`;
+  }
+
+  if (commitMessage) {
+    return `${pullRequestTitle} [${commitShaShort}]`;
+  }
+
+  return undefined;
+};
+
+/**
+ * Netlify `createSiteDeploy` response.
+ *
+ * @see https://open-api.netlify.com/#operation/createSiteDeploy
+ */
+interface NetlifyDeploy {
+  id: string;
+  site_id: string;
+  user_id: string;
+  build_id: string;
+  state: string;
+  name: string;
+  url: string;
+  ssl_url: string;
+  admin_url: string;
+  deploy_url: string;
+  deploy_ssl_url: string;
+  screenshot_url: string;
+  review_id: number;
+  draft: boolean;
+  required: string[];
+  required_functions: string[];
+  error_message: string;
+  branch: string;
+  commit_ref: string;
+  commit_url: string;
+  skipped: boolean;
+  created_at: string;
+  updated_at: string;
+  published_at: string;
+  title: string;
+  context: string;
+  locked: boolean;
+  review_url: string;
+  site_capabilities: object;
+}
+
+const createCommentMessage = (isDraft: boolean, deploy: NetlifyDeploy) =>
+  isDraft
+    ? `🚀 Netlify draft deployed to: ${deploy.deploy_ssl_url}`
+    : `🎉 Netlify published ${deploy.name} to production.\nDeployed to: ${deploy.ssl_url}`;
 
 async function run(): Promise<void> {
   try {
-    // Get required action inputs
-    // const githubToken = core.getInput('github-token', { required: true });
+    const isCommit = Object.keys(github.context.payload).includes('head_commit');
+    const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
+
+    const commitShaShort = github.context.sha.slice(0, 7);
+    const commitMessage = isCommit ? github.context.payload?.head_commit?.message : undefined;
+    const pullRequestNumber = github.context.payload.pull_request?.number;
+    const pullRequestTitle = isPullRequest ? github.context.payload?.pull_request?.title : undefined;
+
+    // Get required inputs
+    const githubToken = core.getInput('github-token', { required: true });
     const netlifyAuthToken = core.getInput('netlify-auth-token', { required: true });
     const siteId = core.getInput('netlify-site-id', { required: true });
     const buildDir = core.getInput('build-dir', { required: true });
 
-    // Get optional action inputs
+    // Get config inputs
     const commentOnCommit = core.getInput('comment-on-commit') === 'true';
     const commentOnPullRequest = core.getInput('comment-on-pull-request') === 'true';
+
+    // Get optional inputs
     const functionsDir = core.getInput('functions-dir') || null;
     const configPath = core.getInput('config-path') || null;
     const draft = core.getInput('draft') === 'true';
-    const message = core.getInput('message') || createMessage();
+    const message = core.getInput('message') || createDeployMessage(commitShaShort, commitMessage, pullRequestTitle);
     const deployTimeout = Number.parseInt(core.getInput('deploy-timeout'), 10) || 1.2e6;
     const parallelHash = Number.parseInt(core.getInput('parallel-hash'), 10) || 100;
     const parallelUpload = Number.parseInt(core.getInput('parallel-upload'), 10) || 15;
@@ -27,9 +93,9 @@ async function run(): Promise<void> {
 
     const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
-    // Deploy site
-    // const deploy =
-    await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
+    process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
+
+    const { deploy } = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
       functionsDir,
       configPath,
       draft,
@@ -40,34 +106,39 @@ async function run(): Promise<void> {
       maxRetry,
     });
 
-    const isCommit = Object.keys(github.context.payload).includes('commits');
-    const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
-
-    process.stdout.write(JSON.stringify({ isCommit, isPullRequest }, null, 2));
+    const githubClient = new github.GitHub(githubToken);
 
     if (isCommit && commentOnCommit) {
-      process.stdout.write(`\ncomment on commit: ${github.context.sha}`);
+      process.stdout.write(`Commenting on commit SHA ${commitShaShort}\n`);
+
+      const {
+        repo: { owner, repo },
+        sha,
+      } = github.context;
+
+      await githubClient.repos.createCommitComment({
+        owner,
+        repo,
+        commit_sha: sha,
+        body: createCommentMessage(draft, deploy),
+      });
     }
 
     if (isPullRequest && commentOnPullRequest) {
-      process.stdout.write(`\ncomment on pull request: ${github.context.payload.pull_request?.number}`);
+      process.stdout.write(`Commenting on pull request #${pullRequestNumber}\n`);
+
+      const {
+        repo: { owner, repo },
+        issue: { number },
+      } = github.context;
+
+      await githubClient.issues.createComment({
+        owner,
+        repo,
+        issue_number: number,
+        body: createCommentMessage(draft, deploy),
+      });
     }
-
-    // Comment with deploy URL on PR
-    // const githubClient = new github.GitHub(githubToken);
-
-    // const { number, owner, repo } = github.context.issue;
-
-    // const body = draft ? `` : ``;
-
-    // if (number !== undefined) {
-    //   await githubClient.issues.createComment({
-    //     issue_number: number,
-    //     owner,
-    //     repo,
-    //     body,
-    //   });
-    // }
   } catch (error) {
     core.setFailed(error.message);
   }
