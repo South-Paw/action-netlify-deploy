@@ -39,7 +39,7 @@ async function run() {
     const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
     if (dryRun) {
-      process.stdout.write(`Action is doing a dry-run. It won't output anything!\n`);
+      process.stdout.write(`Action is running dry - there won't be any outputs from this run.\n`);
     }
 
     process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
@@ -48,7 +48,7 @@ async function run() {
 
     if (!dryRun) {
       try {
-        const { deploy: deployment } = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
+        const deployment = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
           functionsDir,
           configPath,
           draft,
@@ -59,12 +59,17 @@ async function run() {
           maxRetry,
         });
 
-        deploy = deployment;
+        deploy = deployment.deploy;
       } catch (error) {
-        process.stderr.write('netlifyClient.deploy() failed');
-        process.stderr.write(JSON.stringify(error, null, 2));
+        process.stderr.write('netlifyClient.deploy() failed\n');
+        process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
         core.setFailed(error.message);
       }
+    }
+
+    if (!deploy) {
+      core.setFailed('Failed to deploy to Netlify!');
+      return;
     }
 
     const githubClient = new github.GitHub(githubToken);
@@ -86,8 +91,8 @@ async function run() {
             body: createCommentMessage(draft, deploy),
           });
         } catch (error) {
-          process.stderr.write('repos.createCommitComment() failed');
-          process.stderr.write(JSON.stringify(error, null, 2));
+          process.stderr.write('repos.createCommitComment() failed\n');
+          process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
         }
       }
@@ -110,8 +115,8 @@ async function run() {
             body: createCommentMessage(draft, deploy),
           });
         } catch (error) {
-          process.stderr.write('issues.createComment() failed');
-          process.stderr.write(JSON.stringify(error, null, 2));
+          process.stderr.write('issues.createComment() failed\n');
+          process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
         }
       }
