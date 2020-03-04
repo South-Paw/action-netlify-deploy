@@ -9,13 +9,6 @@ module.exports = {
   extends: ['airbnb-typescript/base', 'plugin:prettier/recommended', 'plugin:jest/recommended'],
   rules: {
     'import/named': 'off',
-    'import/order': [
-      'error',
-      {
-        groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
-        'newlines-between': 'never',
-      },
-    ],
     'import/prefer-default-export': 'off',
     'no-console': 'off',
     'no-restricted-globals': 'off',

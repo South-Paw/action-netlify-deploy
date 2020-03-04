@@ -23,21 +23,21 @@ jobs:
       - name: Lint
         run: yarn lint
 
-  # test:
-  #   name: Test
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'push'
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@master
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
 
-  #     - name: Install dependencies
-  #       run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-  #     - name: Test
-  #       run: yarn test
-  #       env:
-  #         CI: true
+      - name: Test
+        run: yarn test
+        env:
+          CI: true
 
   tempDeployDraftOnCommit:
     name: TEMP Deploy draft to Netlify

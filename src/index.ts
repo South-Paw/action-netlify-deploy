@@ -1,67 +1,10 @@
-import * as path from 'path';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import NetlifyAPI from 'netlify';
+import * as path from 'path';
+import { createCommentMessage, createDeployMessage } from './util';
 
-const createDeployMessage = (
-  commitShaShort: string,
-  commitMessage: string | undefined,
-  pullRequestTitle: string | undefined,
-) => {
-  if (commitMessage) {
-    return `Commit: ${commitMessage} [${commitShaShort}]`;
-  }
-
-  if (pullRequestTitle) {
-    return `PR: ${pullRequestTitle} [${commitShaShort}]`;
-  }
-
-  return undefined;
-};
-
-/**
- * Netlify `createSiteDeploy` response.
- *
- * @see https://open-api.netlify.com/#operation/createSiteDeploy
- */
-interface NetlifyDeploy {
-  id: string;
-  site_id: string;
-  user_id: string;
-  build_id: string;
-  state: string;
-  name: string;
-  url: string;
-  ssl_url: string;
-  admin_url: string;
-  deploy_url: string;
-  deploy_ssl_url: string;
-  screenshot_url: string;
-  review_id: number;
-  draft: boolean;
-  required: string[];
-  required_functions: string[];
-  error_message: string;
-  branch: string;
-  commit_ref: string;
-  commit_url: string;
-  skipped: boolean;
-  created_at: string;
-  updated_at: string;
-  published_at: string;
-  title: string;
-  context: string;
-  locked: boolean;
-  review_url: string;
-  site_capabilities: object;
-}
-
-const createCommentMessage = (isDraft: boolean, deploy: NetlifyDeploy) =>
-  isDraft
-    ? `🚀 Netlify draft deployed to: ${deploy.deploy_ssl_url}`
-    : `🎉 Netlify published ${deploy.name} to production.\nDeployed to: ${deploy.ssl_url}`;
-
-async function run(): Promise<void> {
+async function run() {
   try {
     const isCommit = Object.keys(github.context.payload).includes('head_commit');
     const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
@@ -81,6 +24,7 @@ async function run(): Promise<void> {
     // Get config inputs
     const commentOnCommit = core.getInput('comment-on-commit') === 'true';
     const commentOnPullRequest = core.getInput('comment-on-pull-request') === 'true';
+    const dryRun = core.getInput('dry-run') === 'false';
 
     // Get optional inputs
     const functionsDir = core.getInput('functions-dir') || null;
@@ -96,33 +40,41 @@ async function run(): Promise<void> {
 
     process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
 
-    const { deploy } = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
-      functionsDir,
-      configPath,
-      draft,
-      message,
-      deployTimeout,
-      parallelHash,
-      parallelUpload,
-      maxRetry,
-    });
+    let deploy;
+
+    if (!dryRun) {
+      const { deploy: deployment } = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
+        functionsDir,
+        configPath,
+        draft,
+        message,
+        deployTimeout,
+        parallelHash,
+        parallelUpload,
+        maxRetry,
+      });
+
+      deploy = deployment;
+    }
 
     const githubClient = new github.GitHub(githubToken);
 
     if (isCommit && commentOnCommit) {
-      process.stdout.write(`Commenting on commit SHA ${commitShaShort} (${commitSha})\n`);
+      process.stdout.write(`Commenting on commit ${commitShaShort} (SHA: ${commitSha})\n`);
 
       const {
         repo: { owner, repo },
         sha,
       } = github.context;
 
-      await githubClient.repos.createCommitComment({
-        owner,
-        repo,
-        commit_sha: sha,
-        body: createCommentMessage(draft, deploy),
-      });
+      if (!dryRun) {
+        await githubClient.repos.createCommitComment({
+          owner,
+          repo,
+          commit_sha: sha,
+          body: createCommentMessage(draft, deploy),
+        });
+      }
     }
 
     if (isPullRequest && commentOnPullRequest) {
@@ -133,12 +85,14 @@ async function run(): Promise<void> {
         issue: { number },
       } = github.context;
 
-      await githubClient.issues.createComment({
-        owner,
-        repo,
-        issue_number: number,
-        body: createCommentMessage(draft, deploy),
-      });
+      if (!dryRun) {
+        await githubClient.issues.createComment({
+          owner,
+          repo,
+          issue_number: number,
+          body: createCommentMessage(draft, deploy),
+        });
+      }
     }
   } catch (error) {
     core.setFailed(error.message);
