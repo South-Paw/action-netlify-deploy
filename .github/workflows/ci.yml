@@ -42,7 +42,7 @@ jobs:
   tempDeployDraftOnCommit:
     name: TEMP Deploy draft to Netlify
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref != 'refs/heads/master'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
@@ -62,11 +62,11 @@ jobs:
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
           build-dir: './example'
           draft: true
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          comment-on-commit: true
 
   deployDraft:
     name: Deploy draft to Netlify
@@ -91,11 +91,11 @@ jobs:
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
           build-dir: './example'
           draft: true
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          comment-on-pull-request: true
 
   deployProduction:
     name: Deploy production to Netlify
