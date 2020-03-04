@@ -50,7 +50,7 @@ jobs:
       - name: Install 
         run: yarn install --frozen-lockfile
 
-      - name: Build
+      - name: Build action
         run: yarn build
 
       - name: Generate simple HTML document
@@ -79,7 +79,7 @@ jobs:
       - name: Install 
         run: yarn install --frozen-lockfile
 
-      - name: Build
+      - name: Build action
         run: yarn build
 
       - name: Generate simple HTML document

@@ -51,8 +51,6 @@ async function run() {
           message,
         });
 
-        process.stdout.write(`${JSON.stringify(deployment, null, 2)}\n`);
-
         deploy = deployment.deploy;
       } catch (error) {
         process.stderr.write('netlifyClient.deploy() failed\n');
