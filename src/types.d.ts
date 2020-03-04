@@ -1,1 +1,1 @@
-declare module 'netlify/dist/main';
+declare module 'netlify';

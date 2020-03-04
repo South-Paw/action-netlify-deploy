@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import NetlifyAPI from 'netlify/dist/main';
+import NetlifyAPI from 'netlify';
 
 const createMessage = () => undefined;
 
@@ -42,7 +42,7 @@ async function run(): Promise<void> {
       maxRetry,
     });
 
-    process.stdout.write(JSON.stringify(github.context));
+    process.stdout.write(JSON.stringify(github.context, null, 2));
 
     // Comment with deploy URL on PR
     // const githubClient = new github.GitHub(githubToken);

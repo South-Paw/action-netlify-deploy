@@ -20,7 +20,7 @@
     "url": "https://github.com/South-Paw/action-netlify-deploy.git"
   },
   "scripts": {
-    "build": "ncc build src/index.ts",
+    "build": "ncc build src/index.ts && rimraf dist/typescript",
     "clean": "rimraf dist",
     "lint": "yarn lint:type-check && yarn lint:eslint",
     "lint:eslint": "eslint \"src/**/*.{js,ts}\"",
