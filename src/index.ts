@@ -27,14 +27,14 @@ async function run() {
     const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
-    const functionsDir = core.getInput('functions-dir') || null;
-    const configPath = core.getInput('config-path') || null;
+    // const functionsDir = core.getInput('functions-dir') || null;
+    // const configPath = core.getInput('config-path') || null;
     const draft = core.getInput('draft') === 'true';
     const message = core.getInput('message') || createDeployMessage(commitShaShort, commitMessage, pullRequestTitle);
-    const deployTimeout = Number.parseInt(core.getInput('deploy-timeout'), 10) || 1.2e6;
-    const parallelHash = Number.parseInt(core.getInput('parallel-hash'), 10) || 100;
-    const parallelUpload = Number.parseInt(core.getInput('parallel-upload'), 10) || 15;
-    const maxRetry = Number.parseInt(core.getInput('max-retry'), 10) || 5;
+    // const deployTimeout = Number.parseInt(core.getInput('deploy-timeout'), 10) || 1.2e6;
+    // const parallelHash = Number.parseInt(core.getInput('parallel-hash'), 10) || 100;
+    // const parallelUpload = Number.parseInt(core.getInput('parallel-upload'), 10) || 15;
+    // const maxRetry = Number.parseInt(core.getInput('max-retry'), 10) || 5;
 
     const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
@@ -49,15 +49,17 @@ async function run() {
     if (!dryRun) {
       try {
         const deployment = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
-          functionsDir,
-          configPath,
+          // functionsDir,
+          // configPath,
           draft,
           message,
-          deployTimeout,
-          parallelHash,
-          parallelUpload,
-          maxRetry,
+          // deployTimeout,
+          // parallelHash,
+          // parallelUpload,
+          // maxRetry,
         });
+
+        process.stdout.write(`${JSON.stringify(deployment, null, 2)}\n`);
 
         deploy = deployment.deploy;
       } catch (error) {
