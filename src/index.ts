@@ -66,10 +66,15 @@ async function run(): Promise<void> {
     const isCommit = Object.keys(github.context.payload).includes('head_commit');
     const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
 
+    const commitSha = github.context.sha;
     const commitShaShort = github.context.sha.slice(0, 7);
     const commitMessage = isCommit ? github.context.payload?.head_commit?.message : undefined;
     const pullRequestNumber = github.context.payload.pull_request?.number;
     const pullRequestTitle = isPullRequest ? github.context.payload?.pull_request?.title : undefined;
+
+    process.stdout.write(
+      JSON.stringify({ commitShaShort, commitMessage, pullRequestNumber, pullRequestTitle }, null, 2),
+    );
 
     // Get required inputs
     const githubToken = core.getInput('github-token', { required: true });
@@ -109,7 +114,7 @@ async function run(): Promise<void> {
     const githubClient = new github.GitHub(githubToken);
 
     if (isCommit && commentOnCommit) {
-      process.stdout.write(`Commenting on commit SHA ${commitShaShort}\n`);
+      process.stdout.write(`Commenting on commit SHA ${commitShaShort} (${commitSha})\n`);
 
       const {
         repo: { owner, repo },
