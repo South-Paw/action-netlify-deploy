@@ -2,18 +2,21 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import NetlifyAPI from 'netlify';
 import * as path from 'path';
-import { createCommentMessage, createDeployMessage } from './util';
+import { createCommentMessage } from './util';
 
 async function run() {
   try {
     const isCommit = Object.keys(github.context.payload).includes('head_commit');
     const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
+    const isRelease = Object.keys(github.context.payload).includes('release');
 
     const commitSha = github.context.sha;
     const commitShaShort = github.context.sha.slice(0, 7);
     const commitMessage = isCommit ? github.context.payload?.head_commit?.message : undefined;
     const pullRequestNumber = github.context.payload.pull_request?.number;
     const pullRequestTitle = isPullRequest ? github.context.payload?.pull_request?.title : undefined;
+    const releaseTag = isRelease ? github.context.payload?.release?.tag_name : undefined;
+    const releaseTitle = isRelease ? github.context.payload?.release?.name : undefined;
 
     // Get required inputs
     const githubToken = core.getInput('github-token', { required: true });
@@ -30,7 +33,24 @@ async function run() {
     const functionsDir = core.getInput('functions-dir') || null;
     const configPath = core.getInput('config-path') || null;
     const draft = core.getInput('draft') === 'true';
-    const message = core.getInput('message') || createDeployMessage(commitShaShort, commitMessage, pullRequestTitle);
+    let message = core.getInput('message');
+
+    // If there's no explict deploy message input, then make a deploy message from the action's context.
+    if (!message) {
+      if (isCommit) {
+        message = `Commit: ${commitMessage} [${commitShaShort}]`;
+      }
+
+      if (isPullRequest) {
+        message = `PR: ${pullRequestTitle} [${commitShaShort}]`;
+      }
+
+      if (isRelease) {
+        message = `Release: ${releaseTitle} [${releaseTag}]`;
+      }
+
+      message = `Build [${commitShaShort}]`;
+    }
 
     if (dryRun) {
       process.stdout.write(`Action is running dry - there won't be any outputs from this run.\n`);
