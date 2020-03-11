@@ -196,7 +196,7 @@ jobs:
   publishOnMasterRelease:
     name: Publish release to Netlify
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' && github.event.action == 'created' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'release' && github.event.action == 'created'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
