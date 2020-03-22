@@ -4,6 +4,8 @@ import NetlifyAPI from 'netlify';
 import * as path from 'path';
 import { createCommentMessage } from './util';
 
+const dryRunDeploy = { name: 'dry-run', deploy_ssl_url: 'http://example.com', ssl_url: 'http://example.com' };
+
 async function run() {
   try {
     const isCommit = Object.keys(github.context.payload).includes('head_commit');
@@ -87,7 +89,7 @@ async function run() {
     }
 
     const githubClient = new github.GitHub(githubToken);
-    const body = createCommentMessage(draft, deploy);
+    const body = createCommentMessage(draft, !dryRun ? deploy : dryRunDeploy);
 
     if (isCommit && commentOnCommit) {
       process.stdout.write(`Commenting on commit ${commitShaShort} (SHA: ${commitSha})\n`);
