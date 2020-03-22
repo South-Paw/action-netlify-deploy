@@ -77,14 +77,17 @@ async function run() {
         process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
         core.setFailed(error.message);
       }
-    }
 
-    if (!deploy) {
-      core.setFailed('Failed to deploy to Netlify!');
-      return;
+      if (!deploy) {
+        core.setFailed('Failed to deploy to Netlify!');
+        return;
+      }
+    } else {
+      process.stdout.write(`[Dry run] Netlify deploy message: "${message}"\n`);
     }
 
     const githubClient = new github.GitHub(githubToken);
+    const body = createCommentMessage(draft, deploy);
 
     if (isCommit && commentOnCommit) {
       process.stdout.write(`Commenting on commit ${commitShaShort} (SHA: ${commitSha})\n`);
@@ -96,17 +99,14 @@ async function run() {
 
       if (!dryRun) {
         try {
-          await githubClient.repos.createCommitComment({
-            owner,
-            repo,
-            commit_sha: sha,
-            body: createCommentMessage(draft, deploy),
-          });
+          await githubClient.repos.createCommitComment({ owner, repo, commit_sha: sha, body });
         } catch (error) {
           process.stderr.write('repos.createCommitComment() failed\n');
           process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
         }
+      } else {
+        process.stdout.write(`[Dry run] Github commit comment: "${body}"\n`);
       }
     }
 
@@ -120,17 +120,14 @@ async function run() {
 
       if (!dryRun) {
         try {
-          await githubClient.issues.createComment({
-            owner,
-            repo,
-            issue_number: number,
-            body: createCommentMessage(draft, deploy),
-          });
+          await githubClient.issues.createComment({ owner, repo, issue_number: number, body });
         } catch (error) {
           process.stderr.write('issues.createComment() failed\n');
           process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
         }
+      } else {
+        process.stdout.write(`[Dry run] Github pull request comment: "${body}"\n`);
       }
     }
   } catch (error) {
