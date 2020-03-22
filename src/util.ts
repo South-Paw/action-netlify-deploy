@@ -39,19 +39,3 @@ export const createCommentMessage = (isDraft: boolean, deploy: NetlifyDeploy) =>
   isDraft
     ? `🚀 Netlify deployed **${deploy.name}** as draft\n\n${deploy.deploy_ssl_url}`
     : `🎉 Netlify deployed **${deploy.name}** as production\n\n${deploy.ssl_url}`;
-
-export const createDeployMessage = (
-  commitShaShort: string,
-  commitMessage: string | undefined,
-  pullRequestTitle: string | undefined,
-) => {
-  if (commitMessage) {
-    return `Commit: ${commitMessage} [${commitShaShort}]`;
-  }
-
-  if (pullRequestTitle) {
-    return `PR: ${pullRequestTitle} [${commitShaShort}]`;
-  }
-
-  return undefined;
-};

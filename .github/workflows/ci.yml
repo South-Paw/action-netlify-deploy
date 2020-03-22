@@ -39,6 +39,25 @@ jobs:
         env:
           CI: true
 
+  testAction:
+    name: Test action
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
+
+      - name: Test action
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
+          build-dir: './example'
+          comment-on-pull-request: true
+          comment-on-commit: true
+          dry-run: true
+
   deployDraft:
     name: Deploy draft to Netlify
     runs-on: ubuntu-latest

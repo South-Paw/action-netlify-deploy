@@ -55,7 +55,7 @@ jobs:
       # e.g. `yarn build` for create-react-app
 
       - name: Deploy draft to Netlify
-        uses: South-Paw/action-netlify-deploy@v1.0.2
+        uses: South-Paw/action-netlify-deploy@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -79,7 +79,7 @@ jobs:
       # e.g. `yarn build` for create-react-app
 
       - name: Deploy production to Netlify
-        uses: South-Paw/action-netlify-deploy@v1.0.2
+        uses: South-Paw/action-netlify-deploy@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -117,7 +117,7 @@ jobs:
       # e.g. `yarn build` for create-react-app
 
       - name: Deploy draft to Netlify
-        uses: South-Paw/action-netlify-deploy@v1.0.2
+        uses: South-Paw/action-netlify-deploy@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -141,7 +141,7 @@ jobs:
       # e.g. `yarn build` for create-react-app
 
       - name: Deploy production to Netlify
-        uses: South-Paw/action-netlify-deploy@v1.0.2
+        uses: South-Paw/action-netlify-deploy@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -181,7 +181,7 @@ jobs:
       # e.g. `yarn build` for create-react-app
 
       - name: Deploy draft to Netlify
-        uses: South-Paw/action-netlify-deploy@v1.0.2
+        uses: South-Paw/action-netlify-deploy@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -205,7 +205,7 @@ jobs:
       # e.g. `yarn build` for create-react-app
 
       - name: Deploy production to Netlify
-        uses: South-Paw/action-netlify-deploy@v1.0.2
+        uses: South-Paw/action-netlify-deploy@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
