@@ -1,4 +1,4 @@
-import { createCommentMessage, NetlifyDeploy, createDeployMessage } from '../util';
+import { createCommentMessage, NetlifyDeploy } from '../util';
 
 const mockDeploy: NetlifyDeploy = {
   id: 'string',
@@ -42,26 +42,5 @@ describe('createCommentMessage', () => {
     const string = createCommentMessage(false, { ...mockDeploy, name: 'Testing name', ssl_url: 'https://example.com' });
     expect(string).toContain('Testing name');
     expect(string).toContain('https://example.com');
-  });
-});
-
-describe('createDeployMessage', () => {
-  it('should return undefined if there is no commitMessage or pullRequestTitle', () => {
-    const string = createDeployMessage('123', undefined, undefined);
-    expect(string).toBeUndefined();
-  });
-
-  it('should return a commit string if there is a commitMessage', () => {
-    const string = createDeployMessage('123', 'message', undefined);
-    expect(string).toContain('Commit:');
-    expect(string).toContain('message');
-    expect(string).toContain('[123]');
-  });
-
-  it('should return a pr string if there is a pullRequestTitle', () => {
-    const string = createDeployMessage('123', undefined, 'message');
-    expect(string).toContain('PR:');
-    expect(string).toContain('message');
-    expect(string).toContain('[123]');
   });
 });
