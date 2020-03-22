@@ -89,7 +89,7 @@ async function run() {
     }
 
     const githubClient = new github.GitHub(githubToken);
-    const body = createCommentMessage(draft, !dryRun ? deploy : dryRunDeploy);
+    const body = createCommentMessage(draft, dryRun ? dryRunDeploy : deploy);
 
     if (isCommit && commentOnCommit) {
       process.stdout.write(`Commenting on commit ${commitShaShort} (SHA: ${commitSha})\n`);
