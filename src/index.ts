@@ -39,6 +39,8 @@ async function run() {
 
     // If there's no explict deploy message input, then make a deploy message from the action's context.
     if (!message) {
+      message = `Build [${commitShaShort}]`;
+
       if (isCommit) {
         message = `Commit: ${commitMessage} [${commitShaShort}]`;
       }
@@ -50,8 +52,6 @@ async function run() {
       if (isRelease) {
         message = `Release: ${releaseTitle} [${releaseTag}]`;
       }
-
-      message = `Build [${commitShaShort}]`;
     }
 
     if (dryRun) {
