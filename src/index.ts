@@ -8,6 +8,9 @@ const dryRunDeploy = { name: 'dry-run', deploy_ssl_url: 'http://example.com', ss
 
 async function run() {
   try {
+    process.stdout.write('Debuging action context');
+    process.stdout.write(JSON.stringify(github.context.payload, null, 2));
+
     const isCommit = Object.keys(github.context.payload).includes('head_commit');
     const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
     const isRelease = Object.keys(github.context.payload).includes('release');
