@@ -55,15 +55,14 @@ jobs:
           build-dir: "./example"
           comment-on-pull-request: true
           comment-on-commit: true
-          status-on-commit: true
           github-env: "development"
           draft: true
           dry-run: true
 
-  testAction:
-    name: Test action
+  deployTest:
+    name: Deploy test to Netlify
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
@@ -82,8 +81,7 @@ jobs:
           build-dir: "./example"
           comment-on-pull-request: true
           comment-on-commit: true
-          github-env: "development"
-          github-env-report-status: true
+          github-env: "test"
           draft: true
 
   deployProduction:
@@ -108,4 +106,3 @@ jobs:
           build-dir: "./example"
           comment-on-commit: true
           github-env: "production"
-          github-env-report-status: true
