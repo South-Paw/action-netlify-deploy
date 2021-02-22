@@ -117,8 +117,6 @@ async function run(): Promise<void> {
         const siteDir = path.resolve(process.cwd(), buildDir);
         const fnDir = functionsDir ? path.resolve(process.cwd(), functionsDir) : undefined;
 
-        process.stdout.write(`${JSON.stringify({ siteDir, fnDir, configPath, draft, functionsDir }, null, 2)}\n`);
-
         const deployment = await netlifyClient.deploy(siteId, siteDir, { configPath, draft, fnDir, message });
 
         deploy = deployment.deploy;
@@ -143,7 +141,6 @@ async function run(): Promise<void> {
       process.stdout.write(`Commenting on commit ${commitShaShort} (SHA: ${commitSha})\n`);
 
       const {
-        // ref,
         repo: { owner, repo },
         sha,
       } = github.context;

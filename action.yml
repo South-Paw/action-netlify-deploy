@@ -38,11 +38,9 @@ inputs:
   functions-dir:
     description: The folder of any functions to deploy
     required: false
-    default: null
   config-path:
     description: Path to a netlify.toml file to include in the deploy
     required: false
-    default: null
   draft:
     description: If it is a draft deploy or production deploy
     required: false
@@ -50,4 +48,3 @@ inputs:
   message:
     description: "A short message to associate with the deploy (Note: setting this will override the default deploy message of `<type>: <title> [short_sha]`)"
     required: false
-    default: null
