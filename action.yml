@@ -1,5 +1,5 @@
 name: Netlify Deploy Action
-description: "Netlify deployments via GitHub actions"
+description: Netlify deployments via GitHub actions
 author: Alex Gabites <https://github.com/South-Paw>
 branding:
   color: purple
@@ -10,7 +10,7 @@ runs:
 inputs:
   # Required inputs
   github-token:
-    description: "Github token"
+    description: GitHub token
     required: true
   netlify-auth-token:
     description: Your Netlify personal access token (Please save it as a secret in your repo!)
@@ -30,6 +30,13 @@ inputs:
     description: If `true` AND the context of the action is a `pull_request` then the action will comment on the PR.
     required: false
     default: "false"
+  github-env:
+    description: The name of the GitHub environment to deploy to.
+    required: false
+  github-env-report-status:
+    description: If `true` AND `github-env` is set then the action will report the status of environment deployments to PRs and commits.
+    required: false
+    default: "false"
   dry-run:
     description: Run the action but don't actually deploy to Netlify or comment on the commit/PR
     required: false
@@ -47,7 +54,4 @@ inputs:
     default: "false"
   message:
     description: "A short message to associate with the deploy (Note: setting this will override the default deploy message of `<type>: <title> [short_sha]`)"
-    required: false
-  github-env:
-    description: "The name of the GitHub environment to deploy to"
     required: false

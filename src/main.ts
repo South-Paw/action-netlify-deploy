@@ -16,6 +16,7 @@ async function run(): Promise<void> {
     const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
     const isRelease = Object.keys(github.context.payload).includes('release');
 
+    const pullRequestSha = github.context.payload.pull_request?.head.sha;
     const commitSha = github.context.sha;
     const commitShaShort = github.context.sha.slice(0, 7);
     const commitMessage = isCommit ? github.context.payload?.head_commit?.message : undefined;
@@ -33,6 +34,8 @@ async function run(): Promise<void> {
     // Get config inputs
     const commentOnCommit = core.getInput('comment-on-commit') === 'true';
     const commentOnPullRequest = core.getInput('comment-on-pull-request') === 'true';
+    const githubEnv = core.getInput('github-env') || undefined;
+    const githubEnvReportStatus = core.getInput('github-env-report-status') === 'true';
     const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
@@ -40,7 +43,6 @@ async function run(): Promise<void> {
     const draft = core.getInput('draft') === 'true';
     const functionsDir = core.getInput('functions-dir') || undefined;
     let message = core.getInput('message');
-    const githubEnv = core.getInput('github-env') || undefined;
 
     // If there's no explict deploy message input, then make a deploy message from the action's context.
     if (!message) {
@@ -146,35 +148,69 @@ async function run(): Promise<void> {
       }
     }
 
+    const sha = pullRequestSha ?? commitSha;
+
     if (githubEnv) {
-      process.stdout.write(`Creating deployment for '${githubEnv}'\n`);
+      if (!dryRun) {
+        process.stdout.write(`Creating deployment for "${githubEnv}"\n`);
 
-      const {
-        ref,
-        repo: { owner, repo },
-      } = github.context;
-
-      try {
-        const deployment = await githubClient.repos.createDeployment({
+        const {
           ref,
-          owner,
-          repo,
-          environment: githubEnv,
-          auto_merge: false,
-          required_contexts: [],
-        });
+          repo: { owner, repo },
+        } = github.context;
 
-        await githubClient.repos.createDeploymentStatus({
-          owner,
-          repo,
-          state: 'success',
-          deployment_id: deployment.data.id,
-          environment_url: getDeployUrl(draft, deploy),
-        });
-      } catch (error) {
-        process.stderr.write('creating deployment failed\n');
-        process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
-        core.setFailed(error.message);
+        try {
+          const deployment = await githubClient.repos.createDeployment({
+            ref,
+            owner,
+            repo,
+            environment: githubEnv,
+            auto_merge: false,
+            required_contexts: [],
+          });
+
+          await githubClient.repos.createDeploymentStatus({
+            owner,
+            repo,
+            state: 'success',
+            deployment_id: deployment.data.id,
+            environment_url: getDeployUrl(draft, deploy),
+          });
+        } catch (error) {
+          process.stderr.write('creating deployment failed\n');
+          process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
+          core.setFailed(error.message);
+        }
+      } else {
+        process.stdout.write(`[Dry run] Github deployment env: "${githubEnv}"\n`);
+      }
+
+      if (!dryRun) {
+        if (githubEnvReportStatus) {
+          process.stdout.write(`Creating commit status for SHA: "${sha}"\n`);
+
+          const {
+            repo: { owner, repo },
+          } = github.context;
+
+          try {
+            await githubClient.repos.createCommitStatus({
+              sha,
+              owner,
+              repo,
+              state: 'success',
+              context: 'action-netlify-deploy',
+              target_url: getDeployUrl(draft, deploy),
+              description: 'Netlify deployment status',
+            });
+          } catch (error) {
+            process.stderr.write('creating deployment failed\n');
+            process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
+            core.setFailed(error.message);
+          }
+        }
+      } else {
+        process.stdout.write(`[Dry run] Github status on commit: "${sha}"\n`);
       }
     }
   } catch (error) {

@@ -8,7 +8,7 @@
 
 ## About
 
-A Github action that deploys a build directory to Netlify. It can be configured to comment on the commit or PR with the deploy URL, deploy draft builds, deploy Netlify functions and use custom Netlify configs.
+A Github action that deploys a build directory to Netlify. It can be configured to comment on the commit or PR with the deploy URL or deploy with GitHub environments, deploy draft builds, deploy Netlify functions and use custom Netlify configs.
 
 ## Getting started
 
