@@ -16,6 +16,7 @@ async function run(): Promise<void> {
     const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
     const isRelease = Object.keys(github.context.payload).includes('release');
 
+    const pullRequestSha = github.context.payload.pull_request?.head.sha;
     const commitSha = github.context.sha;
     const commitShaShort = github.context.sha.slice(0, 7);
     const commitMessage = isCommit ? github.context.payload?.head_commit?.message : undefined;
@@ -147,51 +148,70 @@ async function run(): Promise<void> {
       }
     }
 
-    if (githubEnv) {
-      process.stdout.write(`Creating deployment for '${githubEnv}'\n`);
+    if (!dryRun) {
+      if (githubEnv) {
+        process.stdout.write(`Creating deployment for "${githubEnv}"\n`);
 
-      const {
-        ref,
-        repo: { owner, repo },
-      } = github.context;
-
-      try {
-        const deployment = await githubClient.repos.createDeployment({
+        const {
           ref,
-          owner,
-          repo,
-          environment: githubEnv,
-          auto_merge: false,
-          required_contexts: [],
-        });
+          repo: { owner, repo },
+        } = github.context;
 
-        await githubClient.repos.createDeploymentStatus({
-          owner,
-          repo,
-          state: 'success',
-          deployment_id: deployment.data.id,
-          environment_url: getDeployUrl(draft, deploy),
-        });
-      } catch (error) {
-        process.stderr.write('creating deployment failed\n');
-        process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
-        core.setFailed(error.message);
+        try {
+          const deployment = await githubClient.repos.createDeployment({
+            ref,
+            owner,
+            repo,
+            environment: githubEnv,
+            auto_merge: false,
+            required_contexts: [],
+          });
+
+          await githubClient.repos.createDeploymentStatus({
+            owner,
+            repo,
+            state: 'success',
+            deployment_id: deployment.data.id,
+            environment_url: getDeployUrl(draft, deploy),
+          });
+        } catch (error) {
+          process.stderr.write('creating deployment failed\n');
+          process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
+          core.setFailed(error.message);
+        }
       }
+    } else {
+      process.stdout.write(`[Dry run] Github deployment env: "${githubEnv}"\n`);
     }
 
-    if (statusOnCommit) {
-      // const sha = github.context.payload.pull_request?.head.sha ?? github.context.sha;
+    if (!dryRun) {
+      if (statusOnCommit) {
+        const sha = pullRequestSha ?? commitSha;
 
-      process.stdout.write(
-        `${JSON.stringify({
-          prSha: github.context.payload.pull_request?.head.sha,
-          ctxSha: github.context.sha,
-          commitSha,
-          commitShaShort,
-        })}\n`,
-      );
+        process.stdout.write(`Creating commit status for SHA: "${sha}"\n`);
 
-      // process.stdout.write(`Creating commit status for '${githubEnv}' (${sha})\n`);
+        const {
+          repo: { owner, repo },
+        } = github.context;
+
+        try {
+          await githubClient.repos.createCommitStatus({
+            owner,
+            repo,
+            sha,
+            state: 'success',
+            context: 'action-netlify-deploy',
+            target_url: getDeployUrl(draft, deploy),
+            description: 'Netlify deployment status',
+          });
+        } catch (error) {
+          process.stderr.write('creating deployment failed\n');
+          process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
+          core.setFailed(error.message);
+        }
+      }
+    } else {
+      process.stdout.write(`[Dry run] Github status on commit: "${githubEnv}"\n`);
     }
   } catch (error) {
     process.stderr.write(JSON.stringify(error, null, 2));

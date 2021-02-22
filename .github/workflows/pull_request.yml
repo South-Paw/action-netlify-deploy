@@ -28,5 +28,5 @@ jobs:
           netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
           build-dir: "./example"
           status-on-commit: true
-          draft: true
           github-env: "development"
+          draft: true

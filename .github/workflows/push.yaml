@@ -55,6 +55,7 @@ jobs:
           build-dir: "./example"
           comment-on-pull-request: true
           comment-on-commit: true
+          status-on-commit: true
           github-env: "test"
           dry-run: true
 
