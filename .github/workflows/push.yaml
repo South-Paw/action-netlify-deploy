@@ -82,7 +82,7 @@ jobs:
           build-dir: "./example"
           comment-on-pull-request: true
           comment-on-commit: true
-          github-env: "development"
+          github-env: "test"
           github-env-report-status: true
           draft: true
 
