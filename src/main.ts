@@ -80,9 +80,9 @@ async function run(): Promise<void> {
     const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
-    const functionsDir = core.getInput('functions-dir') || null;
     const configPath = core.getInput('config-path') || null;
     const draft = core.getInput('draft') === 'true';
+    const functionsDir = core.getInput('functions-dir') || null;
     let message = core.getInput('message');
 
     // If there's no explict deploy message input, then make a deploy message from the action's context.
@@ -116,12 +116,12 @@ async function run(): Promise<void> {
       try {
         const dir = path.resolve(process.cwd(), buildDir);
 
-        process.stdout.write(`${dir}\n`);
+        process.stdout.write(`${JSON.stringify({ configPath, draft, functionsDir }, null, 2)}\n`);
 
         const deployment = await netlifyClient.deploy(siteId, dir, {
           configPath,
           draft,
-          // fnDir: functionsDir !== null ? functionsDir : undefined,
+          fnDir: functionsDir,
           message,
         });
 
