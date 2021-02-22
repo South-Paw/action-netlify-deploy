@@ -1,1 +1,1 @@
-declare module 'netlify'
+declare module 'netlify';
