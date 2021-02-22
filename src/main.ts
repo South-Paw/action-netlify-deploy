@@ -108,26 +108,26 @@ async function run(): Promise<void> {
 
     process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
 
-    const netlifyClient = new NetlifyAPI(netlifyAuthToken);
+    // const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
     let deploy;
 
     if (!dryRun) {
-      try {
-        const deployment = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
-          functionsDir,
-          configPath,
-          draft,
-          message,
-        });
+      // try {
+      //   const deployment = await netlifyClient.deploy(siteId, path.resolve(process.cwd(), buildDir), {
+      //     configPath,
+      //     draft,
+      //     fnDir: functionsDir,
+      //     message,
+      //   });
 
-        deploy = deployment.deploy;
-      } catch (error) {
-        process.stderr.write('netlifyClient.deploy() failed\n');
-        process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
-        process.stderr.write(`${JSON.stringify(error.stack, null, 2)}\n`);
-        core.setFailed(error.message);
-      }
+      //   deploy = deployment.deploy;
+      // } catch (error) {
+      //   process.stderr.write('netlifyClient.deploy() failed\n');
+      //   process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
+      //   process.stderr.write(`${JSON.stringify(error.stack, null, 2)}\n`);
+      //   core.setFailed(error.message);
+      // }
 
       if (!deploy) {
         core.setFailed('Failed to deploy to Netlify!');
