@@ -36,7 +36,7 @@ inputs:
   github-env-report-status:
     description: If `true` AND `github-env` is set then the action will report the status of environment deployments to PRs and commits.
     required: false
-    default: "false"
+    default: "true"
   dry-run:
     description: Run the action but don't actually deploy to Netlify or comment on the commit/PR
     required: false
