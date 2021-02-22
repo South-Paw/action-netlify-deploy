@@ -149,6 +149,8 @@ async function run(): Promise<void> {
 
     process.stdout.write(`${JSON.stringify({ commitSha, ctx: github.context })}\n`);
 
+    const envSha = github.context.payload.pull_request?.head.sha ?? commitSha;
+
     if (githubEnv) {
       if (!dryRun) {
         process.stdout.write(`Creating deployment for "${githubEnv}"\n`);
@@ -159,7 +161,7 @@ async function run(): Promise<void> {
 
         try {
           const deployment = await githubClient.repos.createDeployment({
-            ref: commitSha,
+            ref: envSha,
             owner,
             repo,
             environment: githubEnv,
@@ -185,7 +187,7 @@ async function run(): Promise<void> {
 
       if (!dryRun) {
         if (githubEnvReportStatus) {
-          process.stdout.write(`Creating commit status for SHA: "${commitSha}"\n`);
+          process.stdout.write(`Creating commit status for SHA: "${envSha}"\n`);
 
           const {
             repo: { owner, repo },
@@ -193,7 +195,7 @@ async function run(): Promise<void> {
 
           try {
             await githubClient.repos.createCommitStatus({
-              sha: commitSha,
+              sha: envSha,
               owner,
               repo,
               state: 'success',
@@ -208,7 +210,7 @@ async function run(): Promise<void> {
           }
         }
       } else {
-        process.stdout.write(`[Dry run] Github status on commit: "${commitSha}"\n`);
+        process.stdout.write(`[Dry run] Github status on commit: "${envSha}"\n`);
       }
     }
   } catch (error) {
