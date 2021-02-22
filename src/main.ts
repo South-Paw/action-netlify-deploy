@@ -106,7 +106,7 @@ async function run(): Promise<void> {
       process.stdout.write(`Action is running dry - there won't be any outputs from this run.\n`);
     }
 
-    process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
+    process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n${path.resolve(process.cwd(), buildDir)}\n`);
 
     const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
