@@ -98,7 +98,6 @@ async function run(): Promise<void> {
       process.stdout.write(`Commenting on commit ${commitShaShort} (SHA: ${commitSha})\n`);
 
       const {
-        ref,
         repo: { owner, repo },
         sha,
       } = github.context;
@@ -116,30 +115,6 @@ async function run(): Promise<void> {
           process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
         }
-
-        if (githubEnv) {
-          try {
-            const deployment = await githubClient.repos.createDeployment({
-              ref,
-              owner,
-              repo,
-              environment: githubEnv,
-              auto_merge: false,
-            });
-
-            await githubClient.repos.createDeploymentStatus({
-              owner,
-              repo,
-              state: 'success',
-              deployment_id: deployment.data.id,
-              environment_url: getDeployUrl(draft, deploy),
-            });
-          } catch (error) {
-            process.stderr.write('creating commit deployment failed\n');
-            process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
-            core.setFailed(error.message);
-          }
-        }
       } else {
         process.stdout.write(`[Dry run] Github commit comment: "${body}"\n`);
       }
@@ -149,7 +124,6 @@ async function run(): Promise<void> {
       process.stdout.write(`Commenting on pull request #${pullRequestNumber}\n`);
 
       const {
-        ref,
         repo: { owner, repo },
         issue: { number },
       } = github.context;
@@ -163,36 +137,44 @@ async function run(): Promise<void> {
             body,
           });
         } catch (error) {
-          process.stderr.write('creating pr comment failed\n');
+          process.stderr.write('creating pull request comment failed\n');
           process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
         }
-
-        if (githubEnv) {
-          try {
-            const deployment = await githubClient.repos.createDeployment({
-              ref,
-              owner,
-              repo,
-              environment: githubEnv,
-              auto_merge: false,
-            });
-
-            await githubClient.repos.createDeploymentStatus({
-              owner,
-              repo,
-              state: 'success',
-              deployment_id: deployment.data.id,
-              environment_url: getDeployUrl(draft, deploy),
-            });
-          } catch (error) {
-            process.stderr.write('creating pr deployment failed\n');
-            process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
-            core.setFailed(error.message);
-          }
-        }
       } else {
         process.stdout.write(`[Dry run] Github pull request comment: "${body}"\n`);
+      }
+    }
+
+    if (githubEnv) {
+      process.stdout.write(`Creating deployment for '${githubEnv}'\n`);
+
+      const {
+        ref,
+        repo: { owner, repo },
+      } = github.context;
+
+      try {
+        const deployment = await githubClient.repos.createDeployment({
+          ref,
+          owner,
+          repo,
+          environment: githubEnv,
+          auto_merge: false,
+          required_contexts: [],
+        });
+
+        await githubClient.repos.createDeploymentStatus({
+          owner,
+          repo,
+          state: 'success',
+          deployment_id: deployment.data.id,
+          environment_url: getDeployUrl(draft, deploy),
+        });
+      } catch (error) {
+        process.stderr.write('creating deployment failed\n');
+        process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
+        core.setFailed(error.message);
       }
     }
   } catch (error) {
