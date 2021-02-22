@@ -147,8 +147,6 @@ async function run(): Promise<void> {
       }
     }
 
-    process.stdout.write(`${JSON.stringify({ commitSha, ctx: github.context })}\n`);
-
     const envSha = github.context.payload.pull_request?.head.sha ?? commitSha;
 
     if (githubEnv) {
