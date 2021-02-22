@@ -184,10 +184,10 @@ async function run(): Promise<void> {
       process.stdout.write(`[Dry run] Github deployment env: "${githubEnv}"\n`);
     }
 
+    const sha = pullRequestSha ?? commitSha;
+
     if (!dryRun) {
       if (statusOnCommit) {
-        const sha = pullRequestSha ?? commitSha;
-
         process.stdout.write(`Creating commit status for SHA: "${sha}"\n`);
 
         const {
@@ -196,9 +196,9 @@ async function run(): Promise<void> {
 
         try {
           await githubClient.repos.createCommitStatus({
+            sha,
             owner,
             repo,
-            sha,
             state: 'success',
             context: 'action-netlify-deploy',
             target_url: getDeployUrl(draft, deploy),
@@ -211,7 +211,7 @@ async function run(): Promise<void> {
         }
       }
     } else {
-      process.stdout.write(`[Dry run] Github status on commit: "${githubEnv}"\n`);
+      process.stdout.write(`[Dry run] Github status on commit: "${sha}"\n`);
     }
   } catch (error) {
     process.stderr.write(JSON.stringify(error, null, 2));
