@@ -60,10 +60,10 @@ jobs:
           draft: true
           dry-run: true
 
-  testAction:
-    name: Test action
+  deployTest:
+    name: Deploy test to Netlify
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
