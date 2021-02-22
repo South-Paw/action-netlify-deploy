@@ -114,22 +114,17 @@ async function run(): Promise<void> {
 
     if (!dryRun) {
       try {
-        const dir = path.resolve(process.cwd(), buildDir);
+        const siteDir = path.resolve(process.cwd(), buildDir);
+        const fnDir = functionsDir ? path.resolve(process.cwd(), functionsDir) : undefined;
 
-        process.stdout.write(`${JSON.stringify({ configPath, draft, functionsDir }, null, 2)}\n`);
+        process.stdout.write(`${JSON.stringify({ siteDir, fnDir, configPath, draft, functionsDir }, null, 2)}\n`);
 
-        const deployment = await netlifyClient.deploy(siteId, dir, {
-          configPath,
-          draft,
-          fnDir: functionsDir,
-          message,
-        });
+        const deployment = await netlifyClient.deploy(siteId, siteDir, { configPath, draft, fnDir, message });
 
         deploy = deployment.deploy;
       } catch (error) {
         process.stderr.write('netlifyClient.deploy() failed\n');
         process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
-        process.stderr.write(`${JSON.stringify(error.stack, null, 2)}\n`);
         core.setFailed(error.message);
       }
 
