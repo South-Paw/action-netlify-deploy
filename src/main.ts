@@ -34,7 +34,8 @@ async function run(): Promise<void> {
     // Get config inputs
     const commentOnCommit = core.getInput('comment-on-commit') === 'true';
     const commentOnPullRequest = core.getInput('comment-on-pull-request') === 'true';
-    const statusOnCommit = core.getInput('status-on-commit') === 'true';
+    const githubEnv = core.getInput('github-env') || undefined;
+    const githubEnvReportStatus = core.getInput('github-env-report-status') === 'true';
     const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
@@ -42,7 +43,6 @@ async function run(): Promise<void> {
     const draft = core.getInput('draft') === 'true';
     const functionsDir = core.getInput('functions-dir') || undefined;
     let message = core.getInput('message');
-    const githubEnv = core.getInput('github-env') || undefined;
 
     // If there's no explict deploy message input, then make a deploy message from the action's context.
     if (!message) {
@@ -148,8 +148,10 @@ async function run(): Promise<void> {
       }
     }
 
-    if (!dryRun) {
-      if (githubEnv) {
+    const sha = pullRequestSha ?? commitSha;
+
+    if (githubEnv) {
+      if (!dryRun) {
         process.stdout.write(`Creating deployment for "${githubEnv}"\n`);
 
         const {
@@ -179,43 +181,37 @@ async function run(): Promise<void> {
           process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
         }
+      } else {
+        process.stdout.write(`[Dry run] Github deployment env: "${githubEnv}"\n`);
       }
-    } else {
-      process.stdout.write(`[Dry run] Github deployment env: "${githubEnv}"\n`);
-    }
 
-    const { ref } = github.context;
+      if (!dryRun) {
+        if (githubEnvReportStatus) {
+          process.stdout.write(`Creating commit status for SHA: "${sha}"\n`);
 
-    const sha = pullRequestSha ?? commitSha;
+          const {
+            repo: { owner, repo },
+          } = github.context;
 
-    process.stdout.write(`${JSON.stringify({ sha, ref }, null, 2)}\n`);
-
-    if (!dryRun) {
-      if (statusOnCommit) {
-        process.stdout.write(`Creating commit status for SHA: "${sha}"\n`);
-
-        const {
-          repo: { owner, repo },
-        } = github.context;
-
-        try {
-          await githubClient.repos.createCommitStatus({
-            sha,
-            owner,
-            repo,
-            state: 'success',
-            context: 'action-netlify-deploy',
-            target_url: getDeployUrl(draft, deploy),
-            description: 'Netlify deployment status',
-          });
-        } catch (error) {
-          process.stderr.write('creating deployment failed\n');
-          process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
-          core.setFailed(error.message);
+          try {
+            await githubClient.repos.createCommitStatus({
+              sha,
+              owner,
+              repo,
+              state: 'success',
+              context: 'action-netlify-deploy',
+              target_url: getDeployUrl(draft, deploy),
+              description: 'Netlify deployment status',
+            });
+          } catch (error) {
+            process.stderr.write('creating deployment failed\n');
+            process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
+            core.setFailed(error.message);
+          }
         }
+      } else {
+        process.stdout.write(`[Dry run] Github status on commit: "${sha}"\n`);
       }
-    } else {
-      process.stdout.write(`[Dry run] Github status on commit: "${sha}"\n`);
     }
   } catch (error) {
     process.stderr.write(JSON.stringify(error, null, 2));

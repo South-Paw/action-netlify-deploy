@@ -33,6 +33,33 @@ jobs:
         env:
           CI: true
 
+  dryRun:
+    name: Dry run action
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
+
+      - name: Generate simple HTML document
+        run: |
+          mkdir -p example
+          echo -e "<pre>$(date -u)\n$GITHUB_SHA\n$GITHUB_REF</pre>" > example/index.html
+
+      - name: Test action
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
+          build-dir: "./example"
+          comment-on-pull-request: true
+          comment-on-commit: true
+          status-on-commit: true
+          github-env: "development"
+          draft: true
+          dry-run: true
+
   testAction:
     name: Test action
     runs-on: ubuntu-latest
@@ -53,12 +80,11 @@ jobs:
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
           build-dir: "./example"
-          # comment-on-pull-request: true
-          # comment-on-commit: true
-          status-on-commit: true
-          github-env: "test"
+          comment-on-pull-request: true
+          comment-on-commit: true
+          github-env: "development"
+          github-env-report-status: true
           draft: true
-          # dry-run: true
 
   deployProduction:
     name: Deploy production to Netlify
@@ -81,5 +107,5 @@ jobs:
           netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
           build-dir: "./example"
           comment-on-commit: true
-          status-on-commit: true
           github-env: "production"
+          github-env-report-status: true
