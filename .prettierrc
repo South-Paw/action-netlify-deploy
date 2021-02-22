@@ -2,6 +2,5 @@
   "endOfLine": "lf",
   "printWidth": 120,
   "singleQuote": true,
-  "trailingComma": "all",
-  "parser": "typescript"
+  "trailingComma": "all"
 }

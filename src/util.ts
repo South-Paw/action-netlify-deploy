@@ -35,7 +35,10 @@ export interface NetlifyDeploy {
   site_capabilities: object;
 }
 
-export const createCommentMessage = (isDraft: boolean, deploy: NetlifyDeploy) =>
+export const getDeployUrl = (isDraft: boolean, deploy: any): string =>
+  isDraft ? deploy.deploy_ssl_url : deploy.ssl_url;
+
+export const createCommentMessage = (isDraft: boolean, deploy: any): string =>
   isDraft
-    ? `🚀 Netlify deployed **${deploy.name}** as draft\n\n${deploy.deploy_ssl_url}`
-    : `🎉 Netlify deployed **${deploy.name}** as production\n\n${deploy.ssl_url}`;
+    ? `🚀 Netlify deployed **${deploy.name}** as draft\n\n${getDeployUrl(isDraft, deploy)}`
+    : `🎉 Netlify deployed **${deploy.name}** as production\n\n${getDeployUrl(isDraft, deploy)}`;
