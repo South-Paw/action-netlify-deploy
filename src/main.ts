@@ -184,7 +184,11 @@ async function run(): Promise<void> {
       process.stdout.write(`[Dry run] Github deployment env: "${githubEnv}"\n`);
     }
 
+    const { ref } = github.context;
+
     const sha = pullRequestSha ?? commitSha;
+
+    process.stdout.write(`${JSON.stringify({ sha, ref }, null, 2)}\n`);
 
     if (!dryRun) {
       if (statusOnCommit) {
