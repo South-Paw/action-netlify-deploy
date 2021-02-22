@@ -56,7 +56,7 @@ jobs:
           # comment-on-pull-request: true
           # comment-on-commit: true
           status-on-commit: true
-          # github-env: "test"
+          github-env: "test"
           draft: true
           # dry-run: true
 
