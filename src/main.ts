@@ -121,7 +121,7 @@ async function run(): Promise<void> {
         const deployment = await netlifyClient.deploy(siteId, dir, {
           configPath,
           draft,
-          fnDir: functionsDir,
+          // fnDir: functionsDir !== null ? functionsDir : undefined,
           message,
         });
 
