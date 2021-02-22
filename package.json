@@ -14,14 +14,14 @@
   "files": [
     "dist/"
   ],
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/South-Paw/action-netlify-deploy.git"
   },
   "scripts": {
-    "build": "npm run clean && ncc build src/index.ts -m -e typescript -e esbuild",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist lib",
+    "build": "npm run clean && tsc && ncc build -e typescript -e esbuild",
     "lint": "npm run lint:type-check && npm run lint:eslint",
     "lint:eslint": "eslint \"src/**/*.{js,ts}\"",
     "lint:type-check": "tsc --noEmit",
