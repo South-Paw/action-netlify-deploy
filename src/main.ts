@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import fs from 'fs';
 import NetlifyAPI from 'netlify';
 import * as path from 'path';
 
@@ -107,11 +106,7 @@ async function run(): Promise<void> {
       process.stdout.write(`Action is running dry - there won't be any outputs from this run.\n`);
     }
 
-    fs.lstat(path.resolve(process.cwd(), buildDir), (err, st) => {
-      process.stdout.write(`${JSON.stringify({ err, st }, null, 2)}\n`);
-    });
-
-    process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n${path.resolve(process.cwd(), buildDir)}\n`);
+    process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n`);
 
     const netlifyClient = new NetlifyAPI(netlifyAuthToken);
 
@@ -131,6 +126,8 @@ async function run(): Promise<void> {
         process.stderr.write('netlifyClient.deploy() failed\n');
         process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
         core.setFailed(error.message);
+
+        throw error;
       }
 
       if (!deploy) {
