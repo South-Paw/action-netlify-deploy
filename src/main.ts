@@ -147,6 +147,8 @@ async function run(): Promise<void> {
       }
     }
 
+    process.stdout.write(`${JSON.stringify({ commitSha, ctx: github.context })}\n`);
+
     if (githubEnv) {
       if (!dryRun) {
         process.stdout.write(`Creating deployment for "${githubEnv}"\n`);
