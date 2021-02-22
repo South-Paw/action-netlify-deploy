@@ -1,5 +1,5 @@
-.git
-node_modules
-lib
 dist
+lib
+node_modules
 coverage
+jest.config.js

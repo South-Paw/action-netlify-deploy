@@ -1,16 +1,16 @@
 name: Netlify Deploy Action
-description: Deploys a build to Netlify and can comment on the commit or PR with the URL
+description: "Netlify deployments via GitHub actions"
 author: Alex Gabites <https://github.com/South-Paw>
 branding:
-  color: blue
-  icon: upload-cloud
+  color: purple
+  icon: package
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "node12"
+  main: "dist/index.js"
 inputs:
   # Required inputs
   github-token:
-    description: 'Github token'
+    description: "Github token"
     required: true
   netlify-auth-token:
     description: Your Netlify personal access token (Please save it as a secret in your repo!)
@@ -25,29 +25,29 @@ inputs:
   comment-on-commit:
     description: If `true` AND the context of the action is a `commit` then the action will comment on the SHA.
     required: false
-    default: 'false'
+    default: "false"
   comment-on-pull-request:
     description: If `true` AND the context of the action is a `pull_request` then the action will comment on the PR.
     required: false
-    default: 'false'
+    default: "false"
   dry-run:
     description: Run the action but don't actually deploy to Netlify or comment on the commit/PR
     required: false
-    default: 'false'
+    default: "false"
   # Other optional inputs (see: https://github.com/netlify/js-client#deploy--await-clientdeploysiteid-builddir-opts)
   functions-dir:
     description: The folder of any functions to deploy
     required: false
-    default: null
+    default: "null"
   config-path:
     description: Path to a netlify.toml file to include in the deploy
     required: false
-    default: null
+    default: "null"
   draft:
     description: If it is a draft deploy or production deploy
     required: false
-    default: 'false'
+    default: "false"
   message:
     description: "A short message to associate with the deploy (Note: setting this will override the default deploy message of `<type>: <title> [short_sha]`)"
     required: false
-    default: null
+    default: "null"

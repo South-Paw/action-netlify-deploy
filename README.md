@@ -1,6 +1,6 @@
 # action-netlify-deploy
 
-🙌 Deploys a build to Netlify and can comment on the commit or PR with the URL
+🙌 Netlify deployments via GitHub actions
 
 ![CI](https://github.com/South-Paw/action-netlify-deploy/workflows/CI/badge.svg)
 [![Dependencies](https://david-dm.org/South-Paw/action-netlify-deploy/status.svg)](https://david-dm.org/South-Paw/action-netlify-deploy)
@@ -14,12 +14,12 @@ A Github action that deploys a build directory to Netlify. It can be configured 
 
 There are 4 required inputs for the action
 
-* `github-token` which is usually `${{ secrets.GITHUB_TOKEN }}`
-* `netlify-auth-token` this is a [personal access token](https://app.netlify.com/user/applications#personal-access-tokens) created from your Netlify account
-  * ⚠️ This should be stored as a [Github secret](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) in your repo
-* `netlify-site-id` this is the API ID of your Netlify site
-  * To find this, go to your site's settings and in the "site information" copy the `API ID` field
-* `build-dir` this is where your site build outputs to relative to the root of your projects folder
+- `github-token` which is usually `${{ secrets.GITHUB_TOKEN }}`
+- `netlify-auth-token` this is a [personal access token](https://app.netlify.com/user/applications#personal-access-tokens) created from your Netlify account
+  - ⚠️ This should be stored as a [Github secret](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) in your repo
+- `netlify-site-id` this is the API ID of your Netlify site
+  - To find this, go to your site's settings and in the "site information" copy the `API ID` field
+- `build-dir` this is where your site build outputs to relative to the root of your projects folder
 
 See the [action.yml](./action.yml) for other action inputs and their descriptions
 
@@ -27,9 +27,9 @@ See the [action.yml](./action.yml) for other action inputs and their description
 
 Here are some ideas of how to configure this action in different workflows...
 
-* [Deploying drafts on each commit and publishing on push to master](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-on-each-commit-and-publishing-on-push-to-master)
-* [Deploying drafts of pull requests and publishing on push to master](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-of-pull-requests-and-publishing-on-push-to-master)
-* [Deploying drafts of pull requests and publish on release created](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-of-pull-requests-and-publish-on-release-created)
+- [Deploying drafts on each commit and publishing on push to master](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-on-each-commit-and-publishing-on-push-to-master)
+- [Deploying drafts of pull requests and publishing on push to master](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-of-pull-requests-and-publishing-on-push-to-master)
+- [Deploying drafts of pull requests and publish on release created](https://github.com/South-Paw/action-netlify-deploy#deploying-drafts-of-pull-requests-and-publish-on-release-created)
 
 ### Deploying drafts on each commit and publishing on push to master
 
@@ -39,7 +39,6 @@ name: CI
 on: [push]
 
 jobs:
-
   # This job will:
   #   * deploy a draft every time there is a commit that is not on master branch
   #   * comment on that commit with the deploy URL
@@ -52,7 +51,7 @@ jobs:
         uses: actions/checkout@v1
 
       # ... your other build steps to produce a build directory
-      # e.g. `yarn build` for create-react-app
+      # e.g. `npm run build` for create-react-app
 
       - name: Deploy draft to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.4
@@ -76,7 +75,7 @@ jobs:
         uses: actions/checkout@v1
 
       # ... your other build steps to produce a build directory
-      # e.g. `yarn build` for create-react-app
+      # e.g. `npm run build` for create-react-app
 
       - name: Deploy production to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.4
@@ -101,7 +100,6 @@ on:
       - synchronize
 
 jobs:
-
   # This job will:
   #   * deploy a draft every time there is a pull request created or synchronized that is not on master branch
   #   * comment on that pull request with the deploy URL
@@ -114,7 +112,7 @@ jobs:
         uses: actions/checkout@v1
 
       # ... your other build steps to produce a build directory
-      # e.g. `yarn build` for create-react-app
+      # e.g. `npm run build` for create-react-app
 
       - name: Deploy draft to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.4
@@ -138,7 +136,7 @@ jobs:
         uses: actions/checkout@v1
 
       # ... your other build steps to produce a build directory
-      # e.g. `yarn build` for create-react-app
+      # e.g. `npm run build` for create-react-app
 
       - name: Deploy production to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.4
@@ -165,7 +163,6 @@ on:
       - created
 
 jobs:
-
   # This job will:
   #   * deploy a draft every time there is a pull request created or synchronized that is not on master branch
   #   * comment on that pull request with the deploy URL
@@ -178,7 +175,7 @@ jobs:
         uses: actions/checkout@v1
 
       # ... your other build steps to produce a build directory
-      # e.g. `yarn build` for create-react-app
+      # e.g. `npm run build` for create-react-app
 
       - name: Deploy draft to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.4
@@ -202,7 +199,7 @@ jobs:
         uses: actions/checkout@v1
 
       # ... your other build steps to produce a build directory
-      # e.g. `yarn build` for create-react-app
+      # e.g. `npm run build` for create-react-app
 
       - name: Deploy production to Netlify
         uses: South-Paw/action-netlify-deploy@v1.0.4
@@ -219,20 +216,20 @@ If you find any, please report them [here](https://github.com/South-Paw/action-r
 
 ## Development and Contributing
 
-Download the repo and then install dependencies with `yarn`.
+Download the repo and then install dependencies with `npm`.
 
 ```bash
 # build the action to `./dist`
-yarn build
+npm run build
 
 # clean the `./dist` dir
-yarn clean
+npm run clean
 
 # lint project
-yarn lint
+npm run lint
 
 # run tests
-yarn test
+npm run test
 ```
 
 Contributions and improvements are always welcome 👍
