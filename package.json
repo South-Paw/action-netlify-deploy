@@ -19,7 +19,7 @@
   "scripts": {
     "clean": "rimraf dist lib",
     "build:tsc": "tsc",
-    "build:ncc": "ncc build -e typescript",
+    "build:ncc": "ncc build",
     "build": "npm run clean && npm run build:tsc && npm run build:ncc",
     "lint": "npm run lint:type-check && npm run lint:eslint",
     "lint:eslint": "eslint \"src/**/*.{js,ts}\"",
