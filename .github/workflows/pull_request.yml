@@ -29,3 +29,4 @@ jobs:
           build-dir: "./example"
           draft: true
           comment-on-pull-request: true
+          github-env: "development"

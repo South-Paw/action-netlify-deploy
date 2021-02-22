@@ -55,6 +55,7 @@ jobs:
           build-dir: "./example"
           comment-on-pull-request: true
           comment-on-commit: true
+          github-env: "test"
           dry-run: true
 
   deployProduction:
@@ -78,3 +79,4 @@ jobs:
           netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
           build-dir: "./example"
           comment-on-commit: true
+          github-env: "production"
