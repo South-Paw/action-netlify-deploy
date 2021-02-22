@@ -88,7 +88,7 @@ async function run() {
       process.stdout.write(`[Dry run] Netlify deploy message: "${message}"\n`);
     }
 
-    const githubClient = new github.GitHub(githubToken);
+    const githubClient = github.getOctokit(githubToken);
     const body = createCommentMessage(draft, dryRun ? dryRunDeploy : deploy);
 
     if (isCommit && commentOnCommit) {
