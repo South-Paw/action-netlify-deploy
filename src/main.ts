@@ -80,9 +80,9 @@ async function run(): Promise<void> {
     const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
-    const configPath = core.getInput('config-path') || null;
+    const configPath = core.getInput('config-path') || undefined;
     const draft = core.getInput('draft') === 'true';
-    const functionsDir = core.getInput('functions-dir') || null;
+    const functionsDir = core.getInput('functions-dir') || undefined;
     let message = core.getInput('message');
 
     // If there's no explict deploy message input, then make a deploy message from the action's context.
