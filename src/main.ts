@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import fs from 'fs';
 import NetlifyAPI from 'netlify';
 import * as path from 'path';
 
@@ -105,6 +106,10 @@ async function run(): Promise<void> {
     if (dryRun) {
       process.stdout.write(`Action is running dry - there won't be any outputs from this run.\n`);
     }
+
+    fs.lstat(path.resolve(process.cwd(), buildDir), (err, st) => {
+      process.stdout.write(`${JSON.stringify({ err, st }, null, 2)}\n`);
+    });
 
     process.stdout.write(`Deploying ${draft ? 'draft ' : ''}to Netlify...\n${path.resolve(process.cwd(), buildDir)}\n`);
 
