@@ -154,13 +154,12 @@ async function run(): Promise<void> {
         process.stdout.write(`Creating deployment for "${githubEnv}"\n`);
 
         const {
-          ref,
           repo: { owner, repo },
         } = github.context;
 
         try {
           const deployment = await githubClient.repos.createDeployment({
-            ref,
+            ref: commitSha,
             owner,
             repo,
             environment: githubEnv,
