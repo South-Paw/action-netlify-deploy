@@ -125,9 +125,8 @@ async function run(): Promise<void> {
       } catch (error) {
         process.stderr.write('netlifyClient.deploy() failed\n');
         process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
+        process.stderr.write(`${JSON.stringify(error.stack, null, 2)}\n`);
         core.setFailed(error.message);
-
-        throw error;
       }
 
       if (!deploy) {
