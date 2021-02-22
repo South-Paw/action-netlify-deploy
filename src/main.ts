@@ -16,7 +16,6 @@ async function run(): Promise<void> {
     const isPullRequest = Object.keys(github.context.payload).includes('pull_request');
     const isRelease = Object.keys(github.context.payload).includes('release');
 
-    const pullRequestSha = github.context.payload.pull_request?.head.sha;
     const commitSha = github.context.sha;
     const commitShaShort = github.context.sha.slice(0, 7);
     const commitMessage = isCommit ? github.context.payload?.head_commit?.message : undefined;
@@ -148,8 +147,6 @@ async function run(): Promise<void> {
       }
     }
 
-    const sha = pullRequestSha ?? commitSha;
-
     if (githubEnv) {
       if (!dryRun) {
         process.stdout.write(`Creating deployment for "${githubEnv}"\n`);
@@ -187,7 +184,7 @@ async function run(): Promise<void> {
 
       if (!dryRun) {
         if (githubEnvReportStatus) {
-          process.stdout.write(`Creating commit status for SHA: "${sha}"\n`);
+          process.stdout.write(`Creating commit status for SHA: "${commitSha}"\n`);
 
           const {
             repo: { owner, repo },
@@ -195,7 +192,7 @@ async function run(): Promise<void> {
 
           try {
             await githubClient.repos.createCommitStatus({
-              sha,
+              sha: commitSha,
               owner,
               repo,
               state: 'success',
@@ -210,7 +207,7 @@ async function run(): Promise<void> {
           }
         }
       } else {
-        process.stdout.write(`[Dry run] Github status on commit: "${sha}"\n`);
+        process.stdout.write(`[Dry run] Github status on commit: "${commitSha}"\n`);
       }
     }
   } catch (error) {
