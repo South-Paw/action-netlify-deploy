@@ -33,6 +33,7 @@ async function run(): Promise<void> {
     // Get config inputs
     const commentOnCommit = core.getInput('comment-on-commit') === 'true';
     const commentOnPullRequest = core.getInput('comment-on-pull-request') === 'true';
+    const statusOnCommit = core.getInput('status-on-commit') === 'true';
     const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
@@ -176,6 +177,21 @@ async function run(): Promise<void> {
         process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
         core.setFailed(error.message);
       }
+    }
+
+    if (statusOnCommit) {
+      // const sha = github.context.payload.pull_request?.head.sha ?? github.context.sha;
+
+      process.stdout.write(
+        `${JSON.stringify({
+          prSha: github.context.payload.pull_request?.head.sha,
+          ctxSha: github.context.sha,
+          commitSha,
+          commitShaShort,
+        })}\n`,
+      );
+
+      // process.stdout.write(`Creating commit status for '${githubEnv}' (${sha})\n`);
     }
   } catch (error) {
     process.stderr.write(JSON.stringify(error, null, 2));
