@@ -30,11 +30,22 @@ inputs:
     description: If `true` AND the context of the action is a `pull_request` then the action will comment on the PR.
     required: false
     default: "false"
-  github-env:
+  github-deployment-environment:
     description: The name of the GitHub environment to deploy to.
     required: false
-  github-env-report-status:
-    description: If `true` AND `github-env` is set then the action will report the status of environment deployments to PRs and commits.
+  github-deployment-description:
+    description: Optional description to add to the deployment.
+    required: false
+  github-deployment-is-transient:
+    description: Specifies if the given environment is specific to the deployment and will no longer exist at some point in the future.
+    required: false
+    default: "false"
+  github-deployment-is-production:
+    description: Specifies if the given environment is one that end-users directly interact with.
+    required: false
+    default: "true"
+  github-deployment-should-report-status:
+    description: If `true` AND `github-env` is set then the action will report the status of environment deployments on pull requests.
     required: false
     default: "true"
   dry-run:

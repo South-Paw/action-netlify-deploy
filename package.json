@@ -1,6 +1,6 @@
 {
   "name": "@south-paw/action-netlify-deploy",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Netlify deployments via GitHub actions",
   "keywords": [],
   "homepage": "https://github.com/South-Paw/action-netlify-deploy",
