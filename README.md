@@ -23,6 +23,16 @@ There are 4 required inputs for the action
 
 See the [action.yml](./action.yml) for other action inputs and their descriptions
 
+## Outputs
+
+### `preview-url`
+
+The url of deployment preview.
+
+### `preview-name`
+
+The name of deployment name.
+
 ## Usage
 
 Here are some ideas of how to configure this action in different workflows...
