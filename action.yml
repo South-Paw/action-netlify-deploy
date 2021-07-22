@@ -66,3 +66,9 @@ inputs:
   message:
     description: "A short message to associate with the deploy (Note: setting this will override the default deploy message of `<type>: <title> [short_sha]`)"
     required: false
+
+outputs:
+  preview-url:
+    description: 'deployment preview URL'
+  preview-name:
+    description: 'deployment preview name'
