@@ -129,7 +129,7 @@ async function run(): Promise<void> {
       }
     }
 
-    if (isPullRequest && commentOnPullRequest) {
+    if (commentOnPullRequest) {
       process.stdout.write(`Commenting on pull request #${pullRequestNumber}\n`);
 
       if (!dryRun) {
