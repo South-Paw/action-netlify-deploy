@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import NetlifyAPI from 'netlify';
+import * as exec from '@actions/exec';
 import * as path from 'path';
 import { createCommentMessage, getDeployUrl } from './util';
 
@@ -42,14 +42,12 @@ async function run(): Promise<void> {
     const dryRun = core.getInput('dry-run') === 'true';
 
     // Get optional inputs
-    const configPath = core.getInput('config-path') || undefined;
     const draft = core.getInput('draft') === 'true';
     const functionsDir = core.getInput('functions-dir') || undefined;
     let message = core.getInput('message');
 
     // Create clients
-    const githubClient = github.getOctokit(githubToken);
-    const netlifyClient = new NetlifyAPI(netlifyAuthToken);
+    const octokit = github.getOctokit(githubToken);
 
     // If there's no explict deploy message input, then make a deploy message from the action's context.
     if (!message) {
@@ -81,12 +79,24 @@ async function run(): Promise<void> {
         const siteDir = path.resolve(process.cwd(), buildDir);
         const fnDir = functionsDir ? path.resolve(process.cwd(), functionsDir) : undefined;
 
-        const deployment = await netlifyClient.deploy(siteId, siteDir, { configPath, draft, fnDir, message });
+        const functions = fnDir ? `--functions ${fnDir}` : '';
+        const production = draft ? '' : '--prod';
+        const auth = `--site ${siteId} --auth ${netlifyAuthToken}`;
 
+        const result = await exec.getExecOutput(
+          `netlify deploy ${auth} --dir ${siteDir} --build ${production} ${functions} --message ${message} --json`,
+        );
+
+        const deployment = JSON.parse(result.stdout);
+
+        // eslint-disable-next-line no-console
+        console.dir(deployment, { depth: null });
+
+        // const deployment =
         deploy = deployment.deploy;
         core.setOutput('preview-name', deploy.name);
         core.setOutput('preview-url', getDeployUrl(draft, deploy));
-      } catch (error) {
+      } catch (error: any) {
         process.stderr.write('netlifyClient.deploy() failed\n');
         process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
         core.setFailed(error.message);
@@ -113,13 +123,13 @@ async function run(): Promise<void> {
 
       if (!dryRun) {
         try {
-          await githubClient.repos.createCommitComment({
+          await octokit.rest.repos.createCommitComment({
             owner,
             repo,
             commit_sha: sha,
             body,
           });
-        } catch (error) {
+        } catch (error: any) {
           process.stderr.write('creating commit comment failed\n');
           process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
@@ -134,13 +144,13 @@ async function run(): Promise<void> {
 
       if (!dryRun) {
         try {
-          await githubClient.issues.createComment({
+          await octokit.rest.issues.createComment({
             owner,
             repo,
             issue_number: number,
             body,
           });
-        } catch (error) {
+        } catch (error: any) {
           process.stderr.write('creating pull request comment failed\n');
           process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
@@ -155,7 +165,7 @@ async function run(): Promise<void> {
         process.stdout.write(`Creating deployment for "${githubDeployEnvironment}"\n`);
 
         try {
-          const deployment = await githubClient.repos.createDeployment({
+          const deployment = await octokit.rest.repos.createDeployment({
             owner,
             repo,
             ref: deploymentSha,
@@ -167,14 +177,15 @@ async function run(): Promise<void> {
             production_environment: githubDeployIsProduction,
           });
 
-          await githubClient.repos.createDeploymentStatus({
+          await octokit.rest.repos.createDeploymentStatus({
             owner,
             repo,
+            //@ts-ignore
             deployment_id: deployment.data.id,
             state: 'success',
             environment_url: getDeployUrl(draft, deploy),
           });
-        } catch (error) {
+        } catch (error: any) {
           process.stderr.write('creating deployment failed\n');
           process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
           core.setFailed(error.message);
@@ -188,7 +199,7 @@ async function run(): Promise<void> {
           process.stdout.write(`Creating commit status for SHA: "${deploymentSha}"\n`);
 
           try {
-            await githubClient.repos.createCommitStatus({
+            await octokit.rest.repos.createCommitStatus({
               sha: deploymentSha,
               owner,
               repo,
@@ -197,7 +208,7 @@ async function run(): Promise<void> {
               target_url: getDeployUrl(draft, deploy),
               description: 'action-netlify-deploy status',
             });
-          } catch (error) {
+          } catch (error: any) {
             process.stderr.write('creating commit status failed\n');
             process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
             core.setFailed(error.message);
@@ -207,7 +218,7 @@ async function run(): Promise<void> {
         process.stdout.write(`[Dry run] GitHub commit status "success" on "${deploymentSha}"\n`);
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     process.stderr.write(JSON.stringify(error, null, 2));
     core.setFailed(error.message);
   }
