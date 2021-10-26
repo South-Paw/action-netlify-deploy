@@ -94,8 +94,8 @@ async function run(): Promise<void> {
 
         // const deployment =
         deploy = deployment;
-        core.setOutput('preview-name', deploy.site_name);
-        core.setOutput('preview-url', deploy.deploy_url);
+        core.setOutput('preview-name', deploy?.site_name);
+        core.setOutput('preview-url', deploy?.deploy_url);
       } catch (error: any) {
         process.stderr.write('netlify deploy command failed\n ...');
         process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);

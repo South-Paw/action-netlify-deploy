@@ -106,8 +106,8 @@ function run() {
                     console.dir(deployment, { depth: null });
                     // const deployment =
                     deploy = deployment;
-                    core.setOutput('preview-name', deploy.site_name);
-                    core.setOutput('preview-url', deploy.deploy_url);
+                    core.setOutput('preview-name', deploy === null || deploy === void 0 ? void 0 : deploy.site_name);
+                    core.setOutput('preview-url', deploy === null || deploy === void 0 ? void 0 : deploy.deploy_url);
                 }
                 catch (error) {
                     process.stderr.write('netlify deploy command failed\n ...');
@@ -251,8 +251,8 @@ exports.createCommentMessage = exports.getDeployUrl = void 0;
 const getDeployUrl = (isDraft, deploy) => isDraft ? deploy.deploy_ssl_url : deploy.ssl_url;
 exports.getDeployUrl = getDeployUrl;
 const createCommentMessage = (isDraft, deploy) => isDraft
-    ? `🚀 [DRAFT] Netlify deployed **${deploy.name}** : \n\n${(0, exports.getDeployUrl)(isDraft, deploy)}`
-    : `🎉 [PROD] Netlify deployed **${deploy.name}** : \n\n${(0, exports.getDeployUrl)(isDraft, deploy)}`;
+    ? `🚀 [DRAFT] Netlify deployed **${deploy === null || deploy === void 0 ? void 0 : deploy.site_name}** : \n\n${deploy === null || deploy === void 0 ? void 0 : deploy.deploy_url}`
+    : `🎉 [PROD] Netlify deployed **${deploy === null || deploy === void 0 ? void 0 : deploy.site_name}** : \n\n${deploy === null || deploy === void 0 ? void 0 : deploy.deploy_url}`;
 exports.createCommentMessage = createCommentMessage;
 
 
