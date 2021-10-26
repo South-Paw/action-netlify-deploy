@@ -84,7 +84,7 @@ async function run(): Promise<void> {
         const auth = `--site ${siteId} --auth ${netlifyAuthToken}`;
 
         const result = await exec.getExecOutput(
-          `netlify deploy ${auth} --dir ${siteDir} --build ${production} ${functions} --message ${message} --json`,
+          `netlify deploy ${auth} --dir ${siteDir} --build ${production} ${functions} --message "${message}" --json`,
         );
 
         const deployment = JSON.parse(result.stdout);

@@ -100,7 +100,7 @@ function run() {
                     const functions = fnDir ? `--functions ${fnDir}` : '';
                     const production = draft ? '' : '--prod';
                     const auth = `--site ${siteId} --auth ${netlifyAuthToken}`;
-                    const result = yield exec.getExecOutput(`netlify deploy ${auth} --dir ${siteDir} --build ${production} ${functions} --message ${message} --json`);
+                    const result = yield exec.getExecOutput(`netlify deploy ${auth} --dir ${siteDir} --build ${production} ${functions} --message "${message}" --json`);
                     const deployment = JSON.parse(result.stdout);
                     // eslint-disable-next-line no-console
                     console.dir(deployment, { depth: null });
