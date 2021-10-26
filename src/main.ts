@@ -93,11 +93,11 @@ async function run(): Promise<void> {
         console.dir(deployment, { depth: null });
 
         // const deployment =
-        deploy = deployment.deploy;
-        core.setOutput('preview-name', deploy.name);
-        core.setOutput('preview-url', getDeployUrl(draft, deploy));
+        deploy = deployment;
+        core.setOutput('preview-name', deploy.site_name);
+        core.setOutput('preview-url', deploy.deploy_url);
       } catch (error: any) {
-        process.stderr.write('netlifyClient.deploy() failed\n');
+        process.stderr.write('netlify deploy command failed\n ...');
         process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
         core.setFailed(error.message);
       }
