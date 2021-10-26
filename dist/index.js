@@ -100,17 +100,17 @@ function run() {
                     const functions = fnDir ? `--functions ${fnDir}` : '';
                     const production = draft ? '' : '--prod';
                     const auth = `--site ${siteId} --auth ${netlifyAuthToken}`;
-                    const result = yield exec.getExecOutput(`netlify deploy ${auth} --dir ${siteDir} --build ${production} ${functions} --message "${message}" --json`);
+                    const result = yield exec.getExecOutput(`netlify deploy ${auth} --build --dir ${siteDir} ${production} ${functions} --message "${message}" --json`);
                     const deployment = JSON.parse(result.stdout);
                     // eslint-disable-next-line no-console
                     console.dir(deployment, { depth: null });
                     // const deployment =
-                    deploy = deployment.deploy;
-                    core.setOutput('preview-name', deploy.name);
-                    core.setOutput('preview-url', (0, util_1.getDeployUrl)(draft, deploy));
+                    deploy = deployment;
+                    core.setOutput('preview-name', deploy.site_name);
+                    core.setOutput('preview-url', deploy.deploy_url);
                 }
                 catch (error) {
-                    process.stderr.write('netlifyClient.deploy() failed\n');
+                    process.stderr.write('netlify deploy command failed\n ...');
                     process.stderr.write(`${JSON.stringify(error, null, 2)}\n`);
                     core.setFailed(error.message);
                 }
@@ -251,8 +251,8 @@ exports.createCommentMessage = exports.getDeployUrl = void 0;
 const getDeployUrl = (isDraft, deploy) => isDraft ? deploy.deploy_ssl_url : deploy.ssl_url;
 exports.getDeployUrl = getDeployUrl;
 const createCommentMessage = (isDraft, deploy) => isDraft
-    ? `🚀 Netlify deployed **${deploy.name}** as draft\n\n${(0, exports.getDeployUrl)(isDraft, deploy)}`
-    : `🎉 Netlify deployed **${deploy.name}** as production\n\n${(0, exports.getDeployUrl)(isDraft, deploy)}`;
+    ? `🚀 [DRAFT] Netlify deployed **${deploy.name}** : \n\n${(0, exports.getDeployUrl)(isDraft, deploy)}`
+    : `🎉 [PROD] Netlify deployed **${deploy.name}** : \n\n${(0, exports.getDeployUrl)(isDraft, deploy)}`;
 exports.createCommentMessage = createCommentMessage;
 
 
