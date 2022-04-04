@@ -20,7 +20,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "pnpm run clean && tsup src/index.ts --format cjs,esm --dts --clean",
+    "build": "pnpm run clean && tsup",
+    "esbuild": "esbuild src/index.ts --bundle --platform=node --target=node16 --outfile=lib/index.js ",
     "lint": "pnpm run lint:type-check && pnpm run lint:eslint",
     "lint:eslint": "eslint \"src/**/*.{js,ts}\"",
     "lint:type-check": "tsc --noEmit",
@@ -44,6 +45,7 @@
     "@types/jest": "^27.4.1",
     "@types/node": "^16.11.26",
     "@typescript-eslint/parser": "^5.17.0",
+    "esbuild": "^0.14.31",
     "eslint": "^8.0.1",
     "eslint-plugin-github": "^4.3.6",
     "eslint-plugin-jest": "^25.7.0",

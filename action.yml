@@ -6,7 +6,7 @@ branding:
   icon: package
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'lib/index.js'
 inputs:
   # Required inputs
   github-token:

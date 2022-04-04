@@ -7,6 +7,7 @@ specifiers:
   '@types/jest': ^27.4.1
   '@types/node': ^16.11.26
   '@typescript-eslint/parser': ^5.17.0
+  esbuild: ^0.14.31
   eslint: ^8.0.1
   eslint-plugin-github: ^4.3.6
   eslint-plugin-jest: ^25.7.0
@@ -29,6 +30,7 @@ devDependencies:
   '@types/jest': 27.4.1
   '@types/node': 16.11.26
   '@typescript-eslint/parser': 5.17.0_eslint@8.12.0+typescript@4.6.3
+  esbuild: 0.14.31
   eslint: 8.12.0
   eslint-plugin-github: 4.3.6_eslint@8.12.0+typescript@4.6.3
   eslint-plugin-jest: 25.7.0_d0062e76d70ab01651d408ef76fbe2be
@@ -36,7 +38,7 @@ devDependencies:
   jest-circus: 27.5.1
   prettier: 2.4.1
   rimraf: 3.0.2
-  ts-jest: 27.1.4_9985e1834e803358b7be1e6ce5ca0eea
+  ts-jest: 27.1.4_bdf263159739b0cb45207a4c64472a45
   tsup: 5.12.4_typescript@4.6.3
   typescript: 4.6.3
 
@@ -11236,7 +11238,7 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: true
 
-  /ts-jest/27.1.4_9985e1834e803358b7be1e6ce5ca0eea:
+  /ts-jest/27.1.4_bdf263159739b0cb45207a4c64472a45:
     resolution: {integrity: sha512-qjkZlVPWVctAezwsOD1OPzbZ+k7zA5z3oxII4dGdZo5ggX/PL7kvwTM0pXTr10fAtbiVpJaL3bWd502zAhpgSQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true
@@ -11259,6 +11261,7 @@ packages:
     dependencies:
       '@types/jest': 27.4.1
       bs-logger: 0.2.6
+      esbuild: 0.14.31
       fast-json-stable-stringify: 2.1.0
       jest: 27.5.1
       jest-util: 27.5.1

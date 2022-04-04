@@ -14,7 +14,7 @@ ${deploy == null ? void 0 : deploy.deploy_url}`;
 
 // src/index.ts
 async function run() {
-  var _a, _b, _c, _d, _e, _f, _g;
+  var _a, _b, _c, _d, _e, _f;
   try {
     const isCommit = Object.keys(github.context.payload).includes("head_commit");
     const isPullRequest = Object.keys(github.context.payload).includes("pull_request");
@@ -26,12 +26,12 @@ async function run() {
       repo: { owner, repo }
     } = github.context;
     const shaShort = sha.slice(0, 7);
-    const deploymentSha = (_b = (_a = payload.pull_request) == null ? void 0 : _a.head.sha) != null ? _b : sha;
-    const commitMessage = isCommit ? (_c = payload.head_commit) == null ? void 0 : _c.message : void 0;
-    const pullRequestNumber = (_d = payload.pull_request) == null ? void 0 : _d.number;
-    const pullRequestTitle = isPullRequest ? (_e = payload.pull_request) == null ? void 0 : _e.title : void 0;
-    const releaseTag = isRelease ? (_f = payload.release) == null ? void 0 : _f.tag_name : void 0;
-    const releaseTitle = isRelease ? (_g = payload.release) == null ? void 0 : _g.name : void 0;
+    const deploymentSha = ((_a = payload.pull_request) == null ? void 0 : _a.head.sha) ?? sha;
+    const commitMessage = isCommit ? (_b = payload.head_commit) == null ? void 0 : _b.message : void 0;
+    const pullRequestNumber = (_c = payload.pull_request) == null ? void 0 : _c.number;
+    const pullRequestTitle = isPullRequest ? (_d = payload.pull_request) == null ? void 0 : _d.title : void 0;
+    const releaseTag = isRelease ? (_e = payload.release) == null ? void 0 : _e.tag_name : void 0;
+    const releaseTitle = isRelease ? (_f = payload.release) == null ? void 0 : _f.name : void 0;
     const githubToken = core.getInput("github-token", { required: true });
     const netlifyAuthToken = core.getInput("netlify-auth-token", { required: true });
     const siteId = core.getInput("netlify-site-id", { required: true });
