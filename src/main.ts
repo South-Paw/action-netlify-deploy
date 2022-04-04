@@ -81,19 +81,17 @@ async function run(): Promise<void> {
 
         const functions = fnDir ? `--functions ${fnDir}` : '';
         const production = draft ? '' : '--prod';
-        const auth = `--site ${siteId} --auth ${netlifyAuthToken}`;
+        const auth = `--auth ${netlifyAuthToken}`;
 
         const result = await exec.getExecOutput(
-          `netlify deploy ${auth} --build --dir ${siteDir} ${production} ${functions} --message "${message}" --json`,
+          `netlify deploy --site ${siteId} ${auth} --dir ${siteDir} ${production} ${functions} --message "${message}" --json`,
         );
 
-        const deployment = JSON.parse(result.stdout);
+        deploy = JSON.parse(result.stdout);
 
         // eslint-disable-next-line no-console
-        console.dir(deployment, { depth: null });
+        console.dir(deploy, { depth: null });
 
-        // const deployment =
-        deploy = deployment;
         core.setOutput('preview-name', deploy?.site_name);
         core.setOutput('preview-url', deploy?.deploy_url);
       } catch (error: any) {
