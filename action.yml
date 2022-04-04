@@ -1,11 +1,11 @@
-name: Netlify Deploy Action Fork
-description: Netlify Deploy Attempt to fix PR comments
+name: Netlify Advanced Deploy Action
+description: Netlify Deploy Attempt with PR comments
 author: Hebilicious - Forked <https://github.com/South-Paw>
 branding:
   color: purple
   icon: package
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
 inputs:
   # Required inputs
