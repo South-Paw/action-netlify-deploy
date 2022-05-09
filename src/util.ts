@@ -40,5 +40,5 @@ export const getDeployUrl = (isDraft: boolean, deploy: any): string =>
 
 export const createCommentMessage = (isDraft: boolean, deploy: any): string =>
   isDraft
-    ? `🚀 Netlify deployed **${deploy.name}** as draft\n\n${getDeployUrl(isDraft, deploy)}`
-    : `🎉 Netlify deployed **${deploy.name}** as production\n\n${getDeployUrl(isDraft, deploy)}`;
+    ? `🚀 [DRAFT] Netlify deployed **${deploy?.site_name}** : \n\n${deploy?.deploy_url}`
+    : `🎉 [PROD] Netlify deployed **${deploy?.site_name}** : \n\n${deploy?.deploy_url}`;

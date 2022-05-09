@@ -9,7 +9,9 @@
   },
   "rules": {
     "camelcase": "off",
-    "import/no-namespace": "off"
+    "import/no-namespace": "off",
+    "i18n-text/no-en": "off",
+    "import/no-unresolved": "off"
   },
   "env": {
     "node": true,

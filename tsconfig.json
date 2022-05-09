@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es6",
     "module": "commonjs",
     "outDir": "./lib",
-    "rootDir": "./src",
     "strict": true,
     "noImplicitAny": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   },
   "exclude": ["dist", "lib", "node_modules", "**/*.test.ts"]
 }
